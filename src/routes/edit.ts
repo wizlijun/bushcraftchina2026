@@ -31,7 +31,7 @@ function extFromType(type: string): string {
 async function processImage(
   bucket: R2Bucket,
   cardId: string,
-  field: FormDataEntryValue | null,
+  field: unknown,
   baseName: string
 ): Promise<string | null> {
   if (!(field instanceof File) || field.size === 0) return null;
@@ -172,7 +172,7 @@ export function mountEdit(app: Hono<{ Bindings: Env; Variables: Vars }>): void {
         if (path) card.products.push(path);
       }
     } catch (err) {
-      if (err instanceof HttpError) return c.text(err.message, err.status);
+      if (err instanceof HttpError) return c.text(err.message, err.status as 400);
       throw err;
     }
 

@@ -9,18 +9,23 @@ import { getImage } from "../utils/r2";
 export function mountPages(app: Hono<{ Bindings: Env }>): void {
   app.get("/", async (c) => {
     const cards = await loadAllCards(c.env.BUCKET);
-    const body =
-      cards.length === 0
-        ? html`<div class="empty">还没有卡片</div>`
-        : html`<main class="feed">${raw(cards.map((card) => renderCard(card).toString()).join(""))}</main>`;
-    return c.html(layout("中国 Bushcraft 工匠展", body));
+    if (cards.length === 0) {
+      const empty = html`<div class="empty">还没有卡片</div>`;
+      return c.html(layout("中国 Bushcraft 工匠展", await empty));
+    }
+    const rendered = await Promise.all(
+      cards.map(async (card) => (await renderCard(card)).toString())
+    );
+    const body = html`<main class="feed">${raw(rendered.join(""))}</main>`;
+    return c.html(layout("中国 Bushcraft 工匠展", await body));
   });
 
   app.get("/card/:id", async (c) => {
     const card = await getCard(c.env.BUCKET, c.req.param("id"));
     if (!card) return c.text("卡片不存在", 404);
-    const body = html`<main class="feed">${renderCard(card)}</main>`;
-    return c.html(layout(`${card.brand} · Bushcraft`, body));
+    const cardHtml = await renderCard(card);
+    const body = html`<main class="feed">${cardHtml}</main>`;
+    return c.html(layout(`${card.brand} · Bushcraft`, await body));
   });
 
   app.get("/images/:id/:filename", async (c) => {
