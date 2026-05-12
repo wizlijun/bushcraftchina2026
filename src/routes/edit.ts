@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import type { Env, AuthContext, Card } from "../types";
+import type { AppEnv, Card } from "../types";
 import { requireAuth, requireAdmin, canEditCard } from "../middleware/auth";
 import { layout } from "../templates/layout";
 import { renderEditForm } from "../templates/edit-form";
@@ -9,8 +9,6 @@ import {
 } from "../utils/cards";
 import { loadKeys, saveKeys, generateKey } from "../utils/keys";
 import { putImage, deleteObject } from "../utils/r2";
-
-type Vars = { auth: AuthContext };
 
 const ALLOWED_IMG_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_IMG_BYTES = 5 * 1024 * 1024;
@@ -47,9 +45,9 @@ async function processImage(
   return `/${key}`;
 }
 
-export function mountEdit(app: Hono<{ Bindings: Env; Variables: Vars }>): void {
+export function mountEdit(app: Hono<AppEnv>): void {
   app.get("/edit", requireAuth, async (c) => {
-    const auth = c.get("auth");
+    const auth = c.get("auth")!;
     const key = c.req.query("key") ?? "";
     if (auth.role === "admin") {
       const idx = await listIndex(c.env.BUCKET);
@@ -62,7 +60,7 @@ export function mountEdit(app: Hono<{ Bindings: Env; Variables: Vars }>): void {
   });
 
   app.get("/edit/:id", requireAuth, async (c) => {
-    const auth = c.get("auth");
+    const auth = c.get("auth")!;
     const id = c.req.param("id");
     const key = c.req.query("key") ?? "";
     if (!canEditCard(auth, id)) return c.text("无权限", 403);
@@ -116,7 +114,7 @@ export function mountEdit(app: Hono<{ Bindings: Env; Variables: Vars }>): void {
   });
 
   app.post("/edit/:id", requireAuth, async (c) => {
-    const auth = c.get("auth");
+    const auth = c.get("auth")!;
     const id = c.req.param("id");
     const key = c.req.query("key") ?? "";
     if (!canEditCard(auth, id)) return c.text("无权限", 403);

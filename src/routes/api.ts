@@ -1,14 +1,12 @@
 import { Hono } from "hono";
-import type { Env, AuthContext, Card } from "../types";
+import type { AppEnv, Card } from "../types";
 import { requireAuth, requireAdmin, canEditCard } from "../middleware/auth";
 import {
   listIndex, getCard, putCard, deleteCard, upsertIndexEntry, emptyCard,
 } from "../utils/cards";
 import { loadKeys, saveKeys, generateKey } from "../utils/keys";
 
-type Vars = { auth: AuthContext };
-
-export function mountApi(app: Hono<{ Bindings: Env; Variables: Vars }>): void {
+export function mountApi(app: Hono<AppEnv>): void {
   app.get("/api/cards", async (c) => c.json(await listIndex(c.env.BUCKET)));
 
   app.get("/api/card/:id", async (c) => {
@@ -19,7 +17,7 @@ export function mountApi(app: Hono<{ Bindings: Env; Variables: Vars }>): void {
 
   app.post("/api/card/:id", requireAuth, async (c) => {
     const id = c.req.param("id");
-    if (!canEditCard(c.get("auth"), id)) return c.text("无权限", 403);
+    if (!canEditCard(c.get("auth")!, id)) return c.text("无权限", 403);
     const patch = (await c.req.json()) as Partial<Card>;
     const current = (await getCard(c.env.BUCKET, id)) ?? emptyCard(id, patch.brand ?? "");
     const merged: Card = { ...current, ...patch, id };

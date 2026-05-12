@@ -34,3 +34,6 @@ export interface AuthContext {
   role: Role;
   cardId?: string;
 }
+
+export type AppVars = { auth?: AuthContext };
+export type AppEnv = { Bindings: Env; Variables: AppVars };

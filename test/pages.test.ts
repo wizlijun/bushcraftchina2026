@@ -4,10 +4,10 @@ import { Hono } from "hono";
 import { mountPages } from "../src/routes/pages";
 import { putCard, upsertIndexEntry } from "../src/utils/cards";
 import { putImage } from "../src/utils/r2";
-import type { Env } from "../src/types";
+import type { AppEnv } from "../src/types";
 
 function buildApp() {
-  const app = new Hono<{ Bindings: Env }>();
+  const app = new Hono<AppEnv>();
   mountPages(app);
   return app;
 }

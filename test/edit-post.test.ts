@@ -4,12 +4,10 @@ import { Hono } from "hono";
 import { mountEdit } from "../src/routes/edit";
 import { putCard, upsertIndexEntry, getCard } from "../src/utils/cards";
 import { saveKeys } from "../src/utils/keys";
-import type { Env, AuthContext } from "../src/types";
-
-type Vars = { auth: AuthContext };
+import type { AppEnv } from "../src/types";
 
 function app() {
-  const a = new Hono<{ Bindings: Env; Variables: Vars }>();
+  const a = new Hono<AppEnv>();
   mountEdit(a);
   return a;
 }

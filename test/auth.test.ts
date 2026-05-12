@@ -3,12 +3,10 @@ import { env } from "cloudflare:test";
 import { Hono } from "hono";
 import { requireAuth, requireAdmin } from "../src/middleware/auth";
 import { saveKeys } from "../src/utils/keys";
-import type { Env, AuthContext } from "../src/types";
-
-type Vars = { auth: AuthContext };
+import type { AppEnv } from "../src/types";
 
 function buildApp() {
-  const app = new Hono<{ Bindings: Env; Variables: Vars }>();
+  const app = new Hono<AppEnv>();
   app.get("/private", requireAuth, (c) => c.json(c.get("auth")));
   app.get("/admin", requireAuth, requireAdmin, (c) => c.text("ok"));
   return app;

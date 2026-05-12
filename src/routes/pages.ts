@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { html, raw } from "hono/html";
-import type { Env } from "../types";
+import type { AppEnv } from "../types";
 import { layout } from "../templates/layout";
 import { renderCard } from "../templates/card";
 import { getCard, loadAllCards } from "../utils/cards";
 import { getImage } from "../utils/r2";
 
-export function mountPages(app: Hono<{ Bindings: Env }>): void {
+export function mountPages(app: Hono<AppEnv>): void {
   app.get("/", async (c) => {
     const cards = await loadAllCards(c.env.BUCKET);
     if (cards.length === 0) {
