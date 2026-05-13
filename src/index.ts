@@ -8,10 +8,10 @@ const app = new Hono<AppEnv>();
 
 app.onError((err, c) => {
   console.error(err);
-  return c.text("服务异常，请稍后再试", 500);
+  return c.text("something is amiss — please try again in a moment", 500);
 });
 
-app.notFound((c) => c.text("not found", 404));
+app.notFound((c) => c.text("lost in the woods — that path leads nowhere", 404));
 
 mountPages(app);
 mountEdit(app);

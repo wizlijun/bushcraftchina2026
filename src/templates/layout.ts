@@ -13,8 +13,9 @@ const GLOBAL_CSS = `
 html, body {
   background: var(--bg);
   color: var(--fg);
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: "Iowan Old Style", "Palatino", "Hoefler Text", "PingFang SC", "Songti SC", "Hiragino Sans GB", serif;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.01em;
 }
 body { min-height: 100vh; }
 a { color: var(--accent); text-decoration: none; }
@@ -185,7 +186,7 @@ export function layout(
   body: HtmlEscapedString | string
 ): HtmlEscapedString | Promise<HtmlEscapedString> {
   return html`<!doctype html>
-<html lang="zh-CN">
+<html lang="en-GB">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

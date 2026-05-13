@@ -11,13 +11,13 @@ export function mountApi(app: Hono<AppEnv>): void {
 
   app.get("/api/card/:id", async (c) => {
     const card = await getCard(c.env.BUCKET, c.req.param("id"));
-    if (!card) return c.text("not found", 404);
+    if (!card) return c.text("we couldn’t find that maker", 404);
     return c.json(card);
   });
 
   app.post("/api/card/:id", requireAuth, async (c) => {
     const id = c.req.param("id");
-    if (!canEditCard(c.get("auth")!, id)) return c.text("无权限", 403);
+    if (!canEditCard(c.get("auth")!, id)) return c.text("this door isn’t yours to open", 403);
     const patch = (await c.req.json()) as Partial<Card>;
     const current = (await getCard(c.env.BUCKET, id)) ?? emptyCard(id, patch.brand ?? "");
     const merged: Card = { ...current, ...patch, id };
@@ -36,9 +36,9 @@ export function mountApi(app: Hono<AppEnv>): void {
     const body = (await c.req.json()) as { id?: string; brand?: string };
     const id = (body.id ?? "").trim();
     const brand = (body.brand ?? "").trim();
-    if (!/^[a-z0-9-]+$/.test(id)) return c.text("非法 id", 400);
-    if (!brand) return c.text("品牌名必填", 400);
-    if (await getCard(c.env.BUCKET, id)) return c.text("id 已存在", 400);
+    if (!/^[a-z0-9-]+$/.test(id)) return c.text("the id isn’t quite right — lowercase letters, numbers or hyphens only", 400);
+    if (!brand) return c.text("please give the workshop a name", 400);
+    if (await getCard(c.env.BUCKET, id)) return c.text("that id is already taken", 400);
     const card = emptyCard(id, brand);
     await putCard(c.env.BUCKET, card);
     const idx = await listIndex(c.env.BUCKET);

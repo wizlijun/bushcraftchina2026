@@ -33,20 +33,20 @@ describe("edit GET", () => {
     const res = await app().request("/edit?key=ADMIN", {}, env);
     expect(res.status).toBe(200);
     const body = await res.text();
-    expect(body).toContain("管理员后台");
+    expect(body).toContain("the steward");
     expect(body).toContain("晌午");
   });
 
   it("/edit?key=KSHANGWU shows that card's edit form", async () => {
     const res = await app().request("/edit?key=KSHANGWU", {}, env);
     expect(res.status).toBe(200);
-    expect(await res.text()).toContain("编辑卡片");
+    expect(await res.text()).toContain("tending to");
   });
 
   it("/edit/shangwu?key=KSHANGWU shows form", async () => {
     const res = await app().request("/edit/shangwu?key=KSHANGWU", {}, env);
     expect(res.status).toBe(200);
-    expect(await res.text()).toContain("品牌名");
+    expect(await res.text()).toContain("name of the workshop");
   });
 
   it("/edit/other?key=KSHANGWU returns 403", async () => {

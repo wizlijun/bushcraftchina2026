@@ -22,55 +22,55 @@ export function renderEditForm(
     .map(
       (l, i) =>
         `<div class="row">
-           <input type="text" name="link_label_${i}" placeholder="标签" value="${escapeHtml(l.label)}" />
+           <input type="text" name="link_label_${i}" placeholder="label" value="${escapeHtml(l.label)}" />
            <input type="url" name="link_url_${i}" placeholder="https://" value="${escapeHtml(l.url)}" />
          </div>`
     )
     .join("");
 
   const adminBack = isAdmin
-    ? html`<a href="/edit?key=${key}">← 返回管理员列表</a>`
+    ? html`<a href="/edit?key=${key}">← back to the steward’s desk</a>`
     : "";
 
   return html`<div class="edit-wrap">
-  <h1>编辑卡片：${card.brand || card.id}</h1>
+  <h1>tending to · ${card.brand || card.id}</h1>
   <p style="font-size:12px;color:var(--muted)">${adminBack}</p>
   <form method="post" action="/edit/${encodeURIComponent(card.id)}?key=${encodeURIComponent(key)}" enctype="multipart/form-data">
-    <label>品牌名</label>
+    <label>name of the workshop</label>
     <input type="text" name="brand" value="${card.brand}" required />
 
-    <label>主理人</label>
+    <label>by the hand of</label>
     <input type="text" name="owner" value="${card.owner}" />
 
-    <label>擅长</label>
+    <label>their craft</label>
     <input type="text" name="specialty" value="${card.specialty}" />
 
-    <label>产品特色</label>
+    <label>a few words about their work</label>
     <textarea name="description">${card.description}</textarea>
 
-    <label>Logo（jpg/png/webp，≤5MB）</label>
+    <label>their mark (jpg, png or webp · up to 5MB)</label>
     ${card.logo ? html`<div><img class="preview-img" src="${card.logo}" /></div>` : ""}
     <input type="file" name="logo" accept="image/jpeg,image/png,image/webp" />
 
-    <label>产品图</label>
+    <label>their works</label>
     <div>${raw(productImgs)}</div>
     <input type="file" name="product" accept="image/jpeg,image/png,image/webp" multiple />
 
-    <label>联系方式</label>
+    <label>to reach them</label>
     <div class="row">
-      <input type="text" name="wechat" placeholder="微信" value="${card.contact.wechat ?? ""}" />
-      <input type="text" name="phone" placeholder="电话" value="${card.contact.phone ?? ""}" />
+      <input type="text" name="wechat" placeholder="WeChat" value="${card.contact.wechat ?? ""}" />
+      <input type="text" name="phone" placeholder="telephone" value="${card.contact.phone ?? ""}" />
     </div>
 
-    <label>外链</label>
+    <label>elsewhere on the web</label>
     ${raw(linkRows)}
     <div class="row">
-      <input type="text" name="link_label_new" placeholder="新标签" />
+      <input type="text" name="link_label_new" placeholder="label" />
       <input type="url" name="link_url_new" placeholder="https://" />
     </div>
 
-    <button class="primary" type="submit" name="action" value="save">保存</button>
-    <a class="ghost" style="margin-left:8px" href="/card/${encodeURIComponent(card.id)}" target="_blank">预览</a>
+    <button class="primary" type="submit" name="action" value="save">save</button>
+    <a class="ghost" style="margin-left:8px" href="/card/${encodeURIComponent(card.id)}" target="_blank">preview</a>
   </form>
 </div>`;
 }

@@ -21,7 +21,7 @@ describe("pages routes", () => {
   it("GET / returns empty state when no cards", async () => {
     const res = await buildApp().request("/", {}, env);
     expect(res.status).toBe(200);
-    expect(await res.text()).toContain("还没有卡片");
+    expect(await res.text()).toContain("no makers gathered yet");
   });
 
   it("GET / lists cards by order", async () => {

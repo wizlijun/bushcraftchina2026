@@ -26,8 +26,8 @@ function renderLinks(links: Card["links"]): HtmlOut {
 
 function renderContact(contact: Card["contact"]): HtmlOut {
   const parts: string[] = [];
-  if (contact.wechat) parts.push(`微信：${escapeHtml(contact.wechat)}`);
-  if (contact.phone) parts.push(`电话：${escapeHtml(contact.phone)}`);
+  if (contact.wechat) parts.push(`WeChat · ${escapeHtml(contact.wechat)}`);
+  if (contact.phone) parts.push(`telephone · ${escapeHtml(contact.phone)}`);
   if (!parts.length) return "";
   return html`<div class="contact">${raw(parts.join("　·　"))}</div>`;
 }
@@ -35,14 +35,14 @@ function renderContact(contact: Card["contact"]): HtmlOut {
 export function renderCard(card: Card): HtmlEscapedString | Promise<HtmlEscapedString> {
   const logoSrc = card.logo || "/images/_placeholder/logo.png";
   return html`<section class="card" data-id="${card.id}">
-  <img class="logo" src="${logoSrc}" alt="${card.brand} logo" />
+  <img class="logo" src="${logoSrc}" alt="${card.brand} mark" />
   <h2 class="brand serif">${card.brand}</h2>
   <div class="specialty">${card.specialty}</div>
-  ${card.owner ? html`<div class="owner">主理人 · ${card.owner}</div>` : ""}
+  ${card.owner ? html`<div class="owner">by the hand of · ${card.owner}</div>` : ""}
   ${card.description ? html`<p class="desc">${card.description}</p>` : ""}
   ${renderProducts(card.products)}
   ${renderLinks(card.links)}
   ${renderContact(card.contact)}
-  <div class="hint">向上滑动 · · ·</div>
+  <div class="hint">wander onward · · ·</div>
 </section>`;
 }

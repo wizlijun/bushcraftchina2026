@@ -5,14 +5,14 @@ import { verifyKey } from "../utils/keys";
 export const requireAuth: MiddlewareHandler<AppEnv> = async (c, next) => {
   const key = c.req.query("key") ?? c.req.header("x-edit-key") ?? "";
   const auth = await verifyKey(c.env.BUCKET, key);
-  if (!auth) return c.text("无权限", 403);
+  if (!auth) return c.text("this door isn’t yours to open", 403);
   c.set("auth", auth);
   await next();
 };
 
 export const requireAdmin: MiddlewareHandler<AppEnv> = async (c, next) => {
   const auth = c.get("auth");
-  if (!auth || auth.role !== "admin") return c.text("仅管理员可操作", 403);
+  if (!auth || auth.role !== "admin") return c.text("only the steward may do this", 403);
   await next();
 };
 

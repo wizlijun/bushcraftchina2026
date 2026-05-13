@@ -41,6 +41,6 @@ describe("renderCard", () => {
 
   it("hides empty contact section", () => {
     const c: Card = { ...sample, contact: { wechat: "", phone: "" } };
-    expect(renderCard(c).toString()).not.toContain("微信");
+    expect(renderCard(c).toString()).not.toContain("WeChat");
   });
 });

@@ -34,10 +34,10 @@ async function processImage(
 ): Promise<string | null> {
   if (!(field instanceof File) || field.size === 0) return null;
   if (!ALLOWED_IMG_TYPES.has(field.type)) {
-    throw new HttpError(400, "不支持的图片格式");
+    throw new HttpError(400, "we only welcome jpg, png or webp");
   }
   if (field.size > MAX_IMG_BYTES) {
-    throw new HttpError(400, "图片大于 5MB");
+    throw new HttpError(400, "that image is rather large — 5MB at most, please");
   }
   const ext = extFromType(field.type);
   const key = `images/${cardId}/${baseName}-${Date.now()}.${ext}`;
@@ -52,22 +52,22 @@ export function mountEdit(app: Hono<AppEnv>): void {
     if (auth.role === "admin") {
       const idx = await listIndex(c.env.BUCKET);
       const keys = await loadKeys(c.env.BUCKET);
-      return c.html(layout("管理员后台", await renderAdminList(idx, keys, key)));
+      return c.html(layout("the steward’s desk", await renderAdminList(idx, keys, key)));
     }
     const card = await getCard(c.env.BUCKET, auth.cardId!);
-    if (!card) return c.text("卡片不存在", 404);
-    return c.html(layout(`编辑：${card.brand}`, await renderEditForm(card, key, false)));
+    if (!card) return c.text("we couldn’t find that maker", 404);
+    return c.html(layout(`tending to · ${card.brand}`, await renderEditForm(card, key, false)));
   });
 
   app.get("/edit/:id", requireAuth, async (c) => {
     const auth = c.get("auth")!;
     const id = c.req.param("id");
     const key = c.req.query("key") ?? "";
-    if (!canEditCard(auth, id)) return c.text("无权限", 403);
+    if (!canEditCard(auth, id)) return c.text("this door isn’t yours to open", 403);
     let card = await getCard(c.env.BUCKET, id);
     if (!card) card = emptyCard(id, "");
     return c.html(
-      layout(`编辑：${card.brand || id}`, await renderEditForm(card, key, auth.role === "admin"))
+      layout(`tending to · ${card.brand || id}`, await renderEditForm(card, key, auth.role === "admin"))
     );
   });
 
@@ -76,9 +76,9 @@ export function mountEdit(app: Hono<AppEnv>): void {
     const newId = String(fd.get("new_id") ?? "").trim();
     const newBrand = String(fd.get("new_brand") ?? "").trim();
     const key = c.req.query("key") ?? "";
-    if (!/^[a-z0-9-]+$/.test(newId)) return c.text("非法 id", 400);
-    if (!newBrand) return c.text("品牌名必填", 400);
-    if (await getCard(c.env.BUCKET, newId)) return c.text("id 已存在", 400);
+    if (!/^[a-z0-9-]+$/.test(newId)) return c.text("the id isn’t quite right — lowercase letters, numbers or hyphens only", 400);
+    if (!newBrand) return c.text("please give the workshop a name", 400);
+    if (await getCard(c.env.BUCKET, newId)) return c.text("that id is already taken", 400);
     const card = emptyCard(newId, newBrand);
     await putCard(c.env.BUCKET, card);
     const idx = await listIndex(c.env.BUCKET);
@@ -117,7 +117,7 @@ export function mountEdit(app: Hono<AppEnv>): void {
     const auth = c.get("auth")!;
     const id = c.req.param("id");
     const key = c.req.query("key") ?? "";
-    if (!canEditCard(auth, id)) return c.text("无权限", 403);
+    if (!canEditCard(auth, id)) return c.text("this door isn’t yours to open", 403);
 
     let card = await getCard(c.env.BUCKET, id);
     if (!card) card = emptyCard(id, "");

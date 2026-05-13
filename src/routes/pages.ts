@@ -10,29 +10,29 @@ export function mountPages(app: Hono<AppEnv>): void {
   app.get("/", async (c) => {
     const cards = await loadAllCards(c.env.BUCKET);
     if (cards.length === 0) {
-      const empty = html`<div class="empty">还没有卡片</div>`;
-      return c.html(layout("中国 Bushcraft 工匠展", await empty));
+      const empty = html`<div class="empty">no makers gathered yet · the fire is only just lit</div>`;
+      return c.html(layout("a gathering of makers · bushcraft china", await empty));
     }
     const rendered = await Promise.all(
       cards.map(async (card) => (await renderCard(card)).toString())
     );
     const body = html`<main class="feed">${raw(rendered.join(""))}</main>`;
-    return c.html(layout("中国 Bushcraft 工匠展", await body));
+    return c.html(layout("a gathering of makers · bushcraft china", await body));
   });
 
   app.get("/card/:id", async (c) => {
     const card = await getCard(c.env.BUCKET, c.req.param("id"));
-    if (!card) return c.text("卡片不存在", 404);
+    if (!card) return c.text("we couldn’t find that maker", 404);
     const cardHtml = await renderCard(card);
     const body = html`<main class="feed">${cardHtml}</main>`;
-    return c.html(layout(`${card.brand} · Bushcraft`, await body));
+    return c.html(layout(`${card.brand} · bushcraft china`, await body));
   });
 
   app.get("/images/:id/:filename", async (c) => {
     const id = c.req.param("id");
     const filename = c.req.param("filename");
     const obj = await getImage(c.env.BUCKET, `images/${id}/${filename}`);
-    if (!obj) return c.text("not found", 404);
+    if (!obj) return c.text("nothing here", 404);
     const headers = new Headers();
     obj.writeHttpMetadata(headers);
     headers.set("etag", obj.httpEtag);
