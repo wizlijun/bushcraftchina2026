@@ -34,16 +34,86 @@ button, input, textarea, select {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  padding: 6vh 24px 4vh;
+  perspective: 1200px;
+}
+.card-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+.card-flip.flipped { transform: rotateY(180deg); }
+.card-front, .card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  animation: fadeUp 350ms ease-out;
+  padding: 6vh 24px 4vh;
+  overflow-y: auto;
 }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+.card-back {
+  transform: rotateY(180deg);
+  justify-content: center;
+}
+.card-flip.no-flip .card-front {
+  position: relative;
+}
+.flip-btn {
+  position: absolute;
+  top: 3vh;
+  right: 16px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 200ms;
+  z-index: 2;
+}
+.flip-btn:hover { background: #fff; }
+.back-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 360px;
+  padding: 12px;
+}
+.back-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 150ms;
+  background: #fff;
+}
+.back-img:hover { transform: scale(1.03); }
+.back-flip-btn {
+  position: static;
+  margin-top: 16px;
+}
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+  animation: lbIn 200ms ease;
+}
+@keyframes lbIn { from { opacity: 0; } to { opacity: 1; } }
+.lightbox img {
+  max-width: 92vw; max-height: 90vh;
+  object-fit: contain;
+  border-radius: 6px;
 }
 .card .logo {
   width: 96px; height: 96px;
@@ -81,22 +151,6 @@ button, input, textarea, select {
 }
 .card .desc::before { content: "\u201C"; color: var(--line); margin-right: 4px; }
 .card .desc::after { content: "\u201D"; color: var(--line); margin-left: 4px; }
-.card .products {
-  display: flex; gap: 10px;
-  overflow-x: auto;
-  width: 100%;
-  padding: 4px 4px 12px;
-  scrollbar-width: none;
-  margin-bottom: 20px;
-}
-.card .products::-webkit-scrollbar { display: none; }
-.card .products img {
-  width: 120px; height: 120px;
-  object-fit: cover;
-  border-radius: 10px;
-  flex: 0 0 auto;
-  background: #fff;
-}
 .card .links {
   display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
   margin-bottom: 16px;
@@ -209,6 +263,10 @@ export function layout(
 </head>
 <body>
 ${body}
+<script>
+function openLightbox(src){var d=document.createElement('div');d.className='lightbox';d.onclick=function(){d.remove()};var i=document.createElement('img');i.src=src;d.appendChild(i);document.body.appendChild(d)}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=document.querySelector('.lightbox');if(lb)lb.remove()}})
+</script>
 </body>
 </html>`;
 }

@@ -16,9 +16,9 @@ const ICON_WECHAT = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx=
 function renderProducts(products: string[]): HtmlOut {
   if (!products.length) return "";
   const imgs = products
-    .map((src) => `<img loading="lazy" src="${escapeHtml(src)}" alt="" />`)
+    .map((src) => `<img loading="lazy" src="${escapeHtml(src)}" alt="" class="back-img" onclick="openLightbox(this.src)" />`)
     .join("");
-  return html`<div class="products">${raw(imgs)}</div>`;
+  return imgs;
 }
 
 function renderSocials(socials: Card["socials"], contact: Card["contact"]): HtmlOut {
@@ -63,16 +63,31 @@ function renderContact(contact: Card["contact"]): HtmlOut {
 
 export function renderCard(card: Card): HtmlEscapedString | Promise<HtmlEscapedString> {
   const logoSrc = card.logo || "/images/_default/logo.png";
+  const hasProducts = card.products.length > 0;
+  const flipBtn = hasProducts
+    ? `<button class="flip-btn" onclick="this.closest('.card-flip').classList.toggle('flipped')" aria-label="flip card">&#x21bb;</button>`
+    : "";
+  const backFlipBtn = `<button class="flip-btn back-flip-btn" onclick="this.closest('.card-flip').classList.toggle('flipped')" aria-label="flip back">&#x21ba;</button>`;
+
+  const backFace = hasProducts
+    ? `<div class="card-back"><div class="back-grid">${renderProducts(card.products)}</div>${backFlipBtn}</div>`
+    : "";
+
   return html`<section class="card" data-id="${card.id}">
-  <img class="logo" src="${logoSrc}" alt="${card.brand} mark" />
-  <h2 class="brand serif">${card.brand}</h2>
-  <div class="specialty">${card.specialty}</div>
-  ${card.owner ? html`<div class="owner">by the hand of · ${card.owner}</div>` : ""}
-  ${card.description ? html`<p class="desc">${card.description}</p>` : ""}
-  ${renderProducts(card.products)}
-  ${renderSocials(card.socials ?? {}, card.contact)}
-  ${renderLinks(card.links)}
-  ${renderContact(card.contact)}
-  <div class="hint">wander onward · · ·</div>
+  <div class="card-flip${hasProducts ? "" : " no-flip"}">
+    <div class="card-front">
+      ${raw(flipBtn)}
+      <img class="logo" src="${logoSrc}" alt="${card.brand} mark" />
+      <h2 class="brand serif">${card.brand}</h2>
+      <div class="specialty">${card.specialty}</div>
+      ${card.owner ? html`<div class="owner">by the hand of · ${card.owner}</div>` : ""}
+      ${card.description ? html`<p class="desc">${card.description}</p>` : ""}
+      ${renderSocials(card.socials ?? {}, card.contact)}
+      ${renderLinks(card.links)}
+      ${renderContact(card.contact)}
+      <div class="hint">wander onward · · ·</div>
+    </div>
+    ${raw(backFace)}
+  </div>
 </section>`;
 }
