@@ -11,7 +11,8 @@ const GLOBAL_CSS = `
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
-  background: var(--bg);
+  background: var(--bg) url('/images/_default/bg-weave.jpg') repeat;
+  background-size: 300px;
   color: var(--fg);
   font-family: "Iowan Old Style", "Palatino", "Hoefler Text", "PingFang SC", "Songti SC", "Hiragino Sans GB", serif;
   -webkit-font-smoothing: antialiased;
