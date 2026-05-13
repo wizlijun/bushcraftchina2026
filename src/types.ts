@@ -5,6 +5,7 @@ export interface Card {
   logo: string;
   specialty: string;
   description: string;
+  address?: string;
   contact: {
     wechat?: string;
     phone?: string;

@@ -9,7 +9,8 @@ const sample: Card = {
   logo: "/images/shangwu/logo.png",
   specialty: "手工刀匠",
   description: "每一把刀都是与木头的一次对话",
-  contact: { wechat: "wx", phone: "" },
+  address: "Hangzhou, China",
+  contact: { wechat: "wx", phone: "138 1234 5678" },
   socials: { web: "https://shangwu.com", instagram: "@shangwu_knives" },
   products: ["/images/shangwu/p1.jpg"],
   links: [{ label: "小红书", url: "https://xhs.com/x" }],
@@ -23,14 +24,15 @@ describe("renderCard", () => {
     expect(out).toContain("张三");
   });
 
-  it("includes product image", () => {
+  it("includes product image on back", () => {
     expect(renderCard(sample).toString()).toContain("/images/shangwu/p1.jpg");
   });
 
-  it("includes link", () => {
+  it("includes bottom bar with contact and socials", () => {
     const out = renderCard(sample).toString();
-    expect(out).toContain("https://xhs.com/x");
-    expect(out).toContain("小红书");
+    expect(out).toContain("shangwu.com");
+    expect(out).toContain("138 1234 5678");
+    expect(out).toContain("Hangzhou, China");
   });
 
   it("escapes XSS in brand", () => {
@@ -40,8 +42,9 @@ describe("renderCard", () => {
     expect(out).toContain("&lt;script&gt;");
   });
 
-  it("hides empty contact section", () => {
-    const c: Card = { ...sample, contact: { wechat: "", phone: "" } };
-    expect(renderCard(c).toString()).not.toContain("WeChat");
+  it("hides empty contact in bottom bar", () => {
+    const c: Card = { ...sample, contact: { wechat: "", phone: "" }, socials: {}, address: undefined };
+    const out = renderCard(c).toString();
+    expect(out).not.toContain("bar-item");
   });
 });

@@ -73,6 +73,11 @@ export function renderEditForm(
       <input type="text" name="social_xiaohongshu" placeholder="@xiaohongshu" value="${card.socials?.xiaohongshu ?? ""}" />
     </div>
 
+    <label>where to find them</label>
+    <div class="row">
+      <input type="text" name="address" placeholder="Hangzhou, China" value="${card.address ?? ""}" />
+    </div>
+
     <label>elsewhere on the web</label>
     ${raw(linkRows)}
     <div class="row">

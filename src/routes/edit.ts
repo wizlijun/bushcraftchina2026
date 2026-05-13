@@ -150,6 +150,8 @@ export function mountEdit(app: Hono<AppEnv>): void {
       xiaohongshu: String(fd.get("social_xiaohongshu") ?? "").trim() || undefined,
     };
 
+    card.address = String(fd.get("address") ?? "").trim() || undefined;
+
     const links: Card["links"] = [];
     for (const [k, v] of fd.entries()) {
       const m = k.match(/^link_label_(.+)$/);
