@@ -14,7 +14,7 @@ html, body {
   background-color: var(--bg);
   background-image: url('/images/_default/bg-weave.jpg');
   background-repeat: repeat;
-  background-size: 300px 300px;
+  background-size: 150px 150px;
   color: var(--fg);
   font-family: "Iowan Old Style", "Palatino", "Hoefler Text", "PingFang SC", "Songti SC", "Hiragino Sans GB", serif;
   -webkit-font-smoothing: antialiased;
