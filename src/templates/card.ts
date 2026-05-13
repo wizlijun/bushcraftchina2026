@@ -5,11 +5,13 @@ import { escapeHtml } from "../utils/escape";
 
 type HtmlOut = HtmlEscapedString | Promise<HtmlEscapedString> | string;
 
-const ICON_WEB = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
+const ICON_WEB = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="white" stroke-width="1.2"/><path d="M5.5 12h13" stroke="white" stroke-width="1.2"/><path d="M12 5.5c-1.3 1.4-2.2 3.8-2.2 6.5s.9 5.1 2.2 6.5c1.3-1.4 2.2-3.8 2.2-6.5s-.9-5.1-2.2-6.5" stroke="white" stroke-width="1.2" fill="none"/></svg>`;
 
-const ICON_INSTAGRAM = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`;
+const ICON_INSTAGRAM = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><rect x="6.5" y="6.5" width="11" height="11" rx="3" fill="none" stroke="white" stroke-width="1.2"/><circle cx="12" cy="12" r="2.8" fill="none" stroke="white" stroke-width="1.2"/><circle cx="15.2" cy="8.8" r=".9" fill="white"/></svg>`;
 
-const ICON_XIAOHONGSHU = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-4l-2-2-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>`;
+const ICON_XIAOHONGSHU = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M8.5 6h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H14l-2-1.5L10 18H8.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" fill="none" stroke="white" stroke-width="1.2"/><path d="M12 9v6M9.5 12h5" stroke="white" stroke-width="1.2"/></svg>`;
+
+const ICON_WECHAT = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M9.8 7C7.1 7 5 8.8 5 11c0 1.2.7 2.3 1.7 3l-.4 1.5 1.7-.9c.6.2 1.2.3 1.8.3.2 0 .4 0 .6 0" fill="none" stroke="white" stroke-width="1.1"/><path d="M14.5 10.5c-2.5 0-4.5 1.6-4.5 3.5s2 3.5 4.5 3.5c.5 0 1-.1 1.5-.2l1.3.7-.3-1.2c.9-.7 1.5-1.7 1.5-2.8 0-1.9-2-3.5-4.5-3.5z" fill="none" stroke="white" stroke-width="1.1"/><circle cx="8.5" cy="10" r=".6" fill="white"/><circle cx="11" cy="10" r=".6" fill="white"/><circle cx="13.3" cy="13.2" r=".5" fill="white"/><circle cx="15.5" cy="13.2" r=".5" fill="white"/></svg>`;
 
 function renderProducts(products: string[]): HtmlOut {
   if (!products.length) return "";
@@ -19,20 +21,23 @@ function renderProducts(products: string[]): HtmlOut {
   return html`<div class="products">${raw(imgs)}</div>`;
 }
 
-function renderSocials(socials: Card["socials"]): HtmlOut {
+function renderSocials(socials: Card["socials"], contact: Card["contact"]): HtmlOut {
   const items: string[] = [];
+  if (contact.wechat) {
+    items.push(`<span class="social-link" title="WeChat">${ICON_WECHAT}<span>${escapeHtml(contact.wechat)}</span></span>`);
+  }
   if (socials.web) {
     items.push(`<a class="social-link" href="${escapeHtml(socials.web)}" target="_blank" rel="noopener" title="website">${ICON_WEB}</a>`);
   }
   if (socials.instagram) {
     const handle = socials.instagram.startsWith("@") ? socials.instagram : `@${socials.instagram}`;
     const url = `https://instagram.com/${handle.slice(1)}`;
-    items.push(`<a class="social-link" href="${escapeHtml(url)}" target="_blank" rel="noopener" title="${escapeHtml(handle)}">${ICON_INSTAGRAM}<span>${escapeHtml(handle)}</span></a>`);
+    items.push(`<a class="social-link" href="${escapeHtml(url)}" target="_blank" rel="noopener" title="${escapeHtml(handle)}">${ICON_INSTAGRAM}</a>`);
   }
   if (socials.xiaohongshu) {
     const handle = socials.xiaohongshu.startsWith("@") ? socials.xiaohongshu : `@${socials.xiaohongshu}`;
     const url = `https://www.xiaohongshu.com/user/profile/${handle.slice(1)}`;
-    items.push(`<a class="social-link" href="${escapeHtml(url)}" target="_blank" rel="noopener" title="${escapeHtml(handle)}">${ICON_XIAOHONGSHU}<span>${escapeHtml(handle)}</span></a>`);
+    items.push(`<a class="social-link" href="${escapeHtml(url)}" target="_blank" rel="noopener" title="${escapeHtml(handle)}">${ICON_XIAOHONGSHU}</a>`);
   }
   if (!items.length) return "";
   return html`<div class="socials">${raw(items.join(""))}</div>`;
@@ -51,7 +56,6 @@ function renderLinks(links: Card["links"]): HtmlOut {
 
 function renderContact(contact: Card["contact"]): HtmlOut {
   const parts: string[] = [];
-  if (contact.wechat) parts.push(`WeChat · ${escapeHtml(contact.wechat)}`);
   if (contact.phone) parts.push(`telephone · ${escapeHtml(contact.phone)}`);
   if (!parts.length) return "";
   return html`<div class="contact">${raw(parts.join("　·　"))}</div>`;
@@ -66,7 +70,7 @@ export function renderCard(card: Card): HtmlEscapedString | Promise<HtmlEscapedS
   ${card.owner ? html`<div class="owner">by the hand of · ${card.owner}</div>` : ""}
   ${card.description ? html`<p class="desc">${card.description}</p>` : ""}
   ${renderProducts(card.products)}
-  ${renderSocials(card.socials ?? {})}
+  ${renderSocials(card.socials ?? {}, card.contact)}
   ${renderLinks(card.links)}
   ${renderContact(card.contact)}
   <div class="hint">wander onward · · ·</div>

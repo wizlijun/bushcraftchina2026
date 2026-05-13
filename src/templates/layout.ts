@@ -109,17 +109,18 @@ button, input, textarea, select {
   color: var(--accent);
 }
 .card .socials {
-  display: flex; gap: 16px; justify-content: center; align-items: center;
+  display: flex; gap: 12px; justify-content: center; align-items: center;
   margin-bottom: 16px;
 }
 .card .social-link {
-  display: inline-flex; align-items: center; gap: 5px;
-  color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  transition: color 200ms;
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--fg);
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  transition: opacity 200ms;
 }
-.card .social-link:hover { color: var(--accent); }
+.card .social-link:hover { opacity: 0.65; }
 .card .social-link svg { flex-shrink: 0; }
 .card .contact {
   font-size: 12px; color: var(--muted);
