@@ -144,6 +144,12 @@ export function mountEdit(app: Hono<AppEnv>): void {
       phone: String(fd.get("phone") ?? "").trim() || undefined,
     };
 
+    card.socials = {
+      web: String(fd.get("social_web") ?? "").trim() || undefined,
+      instagram: String(fd.get("social_instagram") ?? "").trim() || undefined,
+      xiaohongshu: String(fd.get("social_xiaohongshu") ?? "").trim() || undefined,
+    };
+
     const links: Card["links"] = [];
     for (const [k, v] of fd.entries()) {
       const m = k.match(/^link_label_(.+)$/);

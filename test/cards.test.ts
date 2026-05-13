@@ -7,7 +7,7 @@ import type { Card } from "../src/types";
 
 const blank: Card = {
   id: "x", brand: "X", owner: "", logo: "", specialty: "", description: "",
-  contact: {}, products: [], links: [],
+  contact: {}, socials: {}, products: [], links: [],
 };
 
 describe("cards data layer", () => {

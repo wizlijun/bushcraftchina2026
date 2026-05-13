@@ -19,7 +19,7 @@ describe("edit GET", () => {
     await saveKeys(env.BUCKET, { admin: "ADMIN", cards: { shangwu: "KSHANGWU" } });
     await putCard(env.BUCKET, {
       id: "shangwu", brand: "晌午", owner: "", logo: "", specialty: "刀匠",
-      description: "", contact: {}, products: [], links: [],
+      description: "", contact: {}, socials: {}, products: [], links: [],
     });
     await upsertIndexEntry(env.BUCKET, { id: "shangwu", brand: "晌午", order: 1 });
   });
@@ -52,7 +52,7 @@ describe("edit GET", () => {
   it("/edit/other?key=KSHANGWU returns 403", async () => {
     await putCard(env.BUCKET, {
       id: "other", brand: "O", owner: "", logo: "", specialty: "",
-      description: "", contact: {}, products: [], links: [],
+      description: "", contact: {}, socials: {}, products: [], links: [],
     });
     const res = await app().request("/edit/other?key=KSHANGWU", {}, env);
     expect(res.status).toBe(403);

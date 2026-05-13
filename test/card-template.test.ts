@@ -10,6 +10,7 @@ const sample: Card = {
   specialty: "手工刀匠",
   description: "每一把刀都是与木头的一次对话",
   contact: { wechat: "wx", phone: "" },
+  socials: { web: "https://shangwu.com", instagram: "@shangwu_knives" },
   products: ["/images/shangwu/p1.jpg"],
   links: [{ label: "小红书", url: "https://xhs.com/x" }],
 };

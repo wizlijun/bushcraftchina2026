@@ -54,6 +54,6 @@ export async function loadAllCards(bucket: R2Bucket): Promise<Card[]> {
 export function emptyCard(id: string, brand: string): Card {
   return {
     id, brand, owner: "", logo: "", specialty: "", description: "",
-    contact: {}, products: [], links: [],
+    contact: {}, socials: {}, products: [], links: [],
   };
 }

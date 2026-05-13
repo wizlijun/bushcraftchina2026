@@ -108,6 +108,19 @@ button, input, textarea, select {
   font-size: 13px;
   color: var(--accent);
 }
+.card .socials {
+  display: flex; gap: 16px; justify-content: center; align-items: center;
+  margin-bottom: 16px;
+}
+.card .social-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  transition: color 200ms;
+}
+.card .social-link:hover { color: var(--accent); }
+.card .social-link svg { flex-shrink: 0; }
 .card .contact {
   font-size: 12px; color: var(--muted);
   letter-spacing: 1px;

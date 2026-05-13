@@ -19,7 +19,7 @@ describe("api routes", () => {
     await saveKeys(env.BUCKET, { admin: "ADMIN", cards: { shangwu: "KSHANGWU" } });
     await putCard(env.BUCKET, {
       id: "shangwu", brand: "晌午", owner: "", logo: "", specialty: "刀匠",
-      description: "", contact: {}, products: [], links: [],
+      description: "", contact: {}, socials: {}, products: [], links: [],
     });
     await upsertIndexEntry(env.BUCKET, { id: "shangwu", brand: "晌午", order: 1 });
   });

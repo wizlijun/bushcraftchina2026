@@ -62,6 +62,17 @@ export function renderEditForm(
       <input type="text" name="phone" placeholder="telephone" value="${card.contact.phone ?? ""}" />
     </div>
 
+    <label>find them online</label>
+    <div class="row">
+      <input type="url" name="social_web" placeholder="https://their-website.com" value="${card.socials?.web ?? ""}" />
+    </div>
+    <div class="row">
+      <input type="text" name="social_instagram" placeholder="@instagram" value="${card.socials?.instagram ?? ""}" />
+    </div>
+    <div class="row">
+      <input type="text" name="social_xiaohongshu" placeholder="@xiaohongshu" value="${card.socials?.xiaohongshu ?? ""}" />
+    </div>
+
     <label>elsewhere on the web</label>
     ${raw(linkRows)}
     <div class="row">

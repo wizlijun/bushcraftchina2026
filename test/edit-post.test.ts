@@ -28,7 +28,7 @@ describe("edit POST", () => {
     await saveKeys(env.BUCKET, { admin: "ADMIN", cards: { shangwu: "KSHANGWU" } });
     await putCard(env.BUCKET, {
       id: "shangwu", brand: "晌午", owner: "", logo: "", specialty: "刀匠",
-      description: "", contact: {}, products: [], links: [],
+      description: "", contact: {}, socials: {}, products: [], links: [],
     });
     await upsertIndexEntry(env.BUCKET, { id: "shangwu", brand: "晌午", order: 1 });
   });
@@ -102,7 +102,7 @@ describe("edit POST", () => {
   it("rejects POST from foreign card key", async () => {
     await putCard(env.BUCKET, {
       id: "other", brand: "O", owner: "", logo: "", specialty: "",
-      description: "", contact: {}, products: [], links: [],
+      description: "", contact: {}, socials: {}, products: [], links: [],
     });
     const fd = formData({ action: "save", brand: "hack" });
     const res = await app().request(

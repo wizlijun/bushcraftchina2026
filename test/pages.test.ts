@@ -27,7 +27,7 @@ describe("pages routes", () => {
   it("GET / lists cards by order", async () => {
     await putCard(env.BUCKET, {
       id: "a", brand: "A", owner: "", logo: "", specialty: "S",
-      description: "", contact: {}, products: [], links: [],
+      description: "", contact: {}, socials: {}, products: [], links: [],
     });
     await upsertIndexEntry(env.BUCKET, { id: "a", brand: "A", order: 1 });
     const res = await buildApp().request("/", {}, env);
@@ -39,7 +39,7 @@ describe("pages routes", () => {
   it("GET /card/:id returns single card page", async () => {
     await putCard(env.BUCKET, {
       id: "shangwu", brand: "晌午", owner: "", logo: "", specialty: "刀匠",
-      description: "", contact: {}, products: [], links: [],
+      description: "", contact: {}, socials: {}, products: [], links: [],
     });
     await upsertIndexEntry(env.BUCKET, { id: "shangwu", brand: "晌午", order: 1 });
     const res = await buildApp().request("/card/shangwu", {}, env);

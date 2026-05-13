@@ -9,6 +9,11 @@ export interface Card {
     wechat?: string;
     phone?: string;
   };
+  socials: {
+    web?: string;
+    instagram?: string;
+    xiaohongshu?: string;
+  };
   products: string[];
   links: Array<{ label: string; url: string }>;
 }
