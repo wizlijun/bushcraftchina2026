@@ -41,7 +41,7 @@ export function mountPages(app: Hono<AppEnv>): void {
     return c.html(layout(`${card.brand} · bushcraft china`, await body));
   });
 
-  app.get("/images/:id/:filename", async (c) => {
+  app.get("/images/:id/:filename{.+}", async (c) => {
     const id = c.req.param("id");
     const filename = c.req.param("filename");
     const obj = await getImage(c.env.BUCKET, `images/${id}/${filename}`);

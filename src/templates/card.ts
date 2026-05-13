@@ -33,7 +33,7 @@ function renderContact(contact: Card["contact"]): HtmlOut {
 }
 
 export function renderCard(card: Card): HtmlEscapedString | Promise<HtmlEscapedString> {
-  const logoSrc = card.logo || "/images/_placeholder/logo.png";
+  const logoSrc = card.logo || "/images/_default/logo.png";
   return html`<section class="card" data-id="${card.id}">
   <img class="logo" src="${logoSrc}" alt="${card.brand} mark" />
   <h2 class="brand serif">${card.brand}</h2>
