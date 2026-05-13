@@ -14,7 +14,7 @@ html, body {
   background-color: var(--bg);
   background-image: url('/images/_default/bg.jpg');
   background-repeat: repeat;
-  background-size: 256px 256px;
+  background-size: 512px 512px;
   color: var(--fg);
   font-family: "Iowan Old Style", "Palatino", "Hoefler Text", "PingFang SC", "Songti SC", "Hiragino Sans GB", serif;
   -webkit-font-smoothing: antialiased;
