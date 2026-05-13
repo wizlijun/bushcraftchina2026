@@ -11,7 +11,10 @@ const GLOBAL_CSS = `
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: url('/images/_default/bg.jpg');
+  background-repeat: repeat;
+  background-size: 256px 256px;
   color: var(--fg);
   font-family: "Iowan Old Style", "Palatino", "Hoefler Text", "PingFang SC", "Songti SC", "Hiragino Sans GB", serif;
   -webkit-font-smoothing: antialiased;
