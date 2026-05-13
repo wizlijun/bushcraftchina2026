@@ -9,7 +9,7 @@ const ICON_WEB = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12
 
 const ICON_INSTAGRAM = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><rect x="6.5" y="6.5" width="11" height="11" rx="3" fill="none" stroke="white" stroke-width="1.2"/><circle cx="12" cy="12" r="2.8" fill="none" stroke="white" stroke-width="1.2"/><circle cx="15.2" cy="8.8" r=".9" fill="white"/></svg>`;
 
-const ICON_XIAOHONGSHU = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M8.5 6h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H14l-2-1.5L10 18H8.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" fill="none" stroke="white" stroke-width="1.2"/><path d="M12 9v6M9.5 12h5" stroke="white" stroke-width="1.2"/></svg>`;
+const ICON_XIAOHONGSHU = `<svg width="50" height="22" viewBox="0 0 50 22"><rect width="50" height="22" rx="11" fill="currentColor"/><text x="25" y="15.5" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="500" fill="white" letter-spacing="0.5">小红书</text></svg>`;
 
 const ICON_WECHAT = `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M9.8 7C7.1 7 5 8.8 5 11c0 1.2.7 2.3 1.7 3l-.4 1.5 1.7-.9c.6.2 1.2.3 1.8.3.2 0 .4 0 .6 0" fill="none" stroke="white" stroke-width="1.1"/><path d="M14.5 10.5c-2.5 0-4.5 1.6-4.5 3.5s2 3.5 4.5 3.5c.5 0 1-.1 1.5-.2l1.3.7-.3-1.2c.9-.7 1.5-1.7 1.5-2.8 0-1.9-2-3.5-4.5-3.5z" fill="none" stroke="white" stroke-width="1.1"/><circle cx="8.5" cy="10" r=".6" fill="white"/><circle cx="11" cy="10" r=".6" fill="white"/><circle cx="13.3" cy="13.2" r=".5" fill="white"/><circle cx="15.5" cy="13.2" r=".5" fill="white"/></svg>`;
 
