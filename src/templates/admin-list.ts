@@ -33,7 +33,7 @@ export function renderAdminList(
     .join("");
 
   return html`<div class="edit-wrap">
-  <h1>the steward’s desk（管理后台）</h1>
+  <h1>Admin Desk（管理后台）</h1>
   <p style="font-size:12px;color:var(--muted);margin-bottom:8px">${index.length} maker${index.length === 1 ? "" : "s"} gathered so far（已收录的工匠数）</p>
 
   <h2>welcome a new maker（新增工匠）</h2>

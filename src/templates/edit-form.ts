@@ -68,11 +68,11 @@ export function renderEditForm(
     .join("");
 
   const adminBack = isAdmin
-    ? html`<a href="/edit?key=${key}">← back to the steward’s desk（返回管理后台）</a>`
+    ? html`<a href="/edit?key=${key}">← back to Admin Desk（返回管理后台）</a>`
     : "";
 
   return html`<div class="edit-wrap">
-  <h1>tending to · ${card.brand || card.id}</h1>
+  <h1>Edit · ${card.brand || card.id}</h1>
   <p style="font-size:12px;color:var(--muted);margin-bottom:16px">${adminBack}</p>
   <form method="post" action="/edit/${encodeURIComponent(card.id)}?key=${encodeURIComponent(key)}" enctype="multipart/form-data">
     <h2>the basics（基本信息）</h2>
@@ -128,7 +128,7 @@ export function renderEditForm(
     </div>
 
     <div class="card-share" id="cardShare" data-path="/card/${encodeURIComponent(card.id)}">
-      <canvas id="cardQr" width="120" height="120"></canvas>
+      <div id="cardQr"></div>
       <div class="card-share-body">
         <div class="card-share-label">scan or share（扫码或分享）</div>
         <div class="card-share-url" id="cardShareUrl">—</div>
@@ -140,7 +140,7 @@ export function renderEditForm(
   <h2>voice notes from visitors（访客语音留言）</h2>
   ${raw(renderVoiceItems(card.id, voices, key))}
 </div>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 (function(){
   var share = document.getElementById('cardShare');
@@ -152,10 +152,16 @@ export function renderEditForm(
   var pageLink = document.getElementById('cardPageLink');
   if(urlEl) urlEl.textContent = url;
   if(pageLink) pageLink.href = url;
-  if(window.QRCode){
-    QRCode.toCanvas(document.getElementById('cardQr'), url, {
-      width: 120, margin: 1,
-      color: { dark: '#2C2C2C', light: '#ffffff' }
+  var qrEl = document.getElementById('cardQr');
+  if(qrEl && typeof QRCode !== 'undefined'){
+    qrEl.innerHTML = '';
+    new QRCode(qrEl, {
+      text: url,
+      width: 120,
+      height: 120,
+      colorDark: '#2C2C2C',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
     });
   }
   if(copyBtn){

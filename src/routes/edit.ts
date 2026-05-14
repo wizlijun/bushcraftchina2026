@@ -60,12 +60,12 @@ export function mountEdit(app: Hono<AppEnv>): void {
           counts[e.id] = card?.voice_count ?? 0;
         })
       );
-      return c.html(layout({ title: "the steward’s desk", noindex: true }, await renderAdminList(idx, keys, key, counts)));
+      return c.html(layout({ title: "Admin Desk", noindex: true }, await renderAdminList(idx, keys, key, counts)));
     }
     const card = await getCard(c.env.BUCKET, auth.cardId!);
     if (!card) return c.text("we couldn’t find that maker", 404);
     const { items: voices } = await loadVoiceIndex(c.env.BUCKET, card.id);
-    return c.html(layout({ title: `tending to · ${card.brand}`, noindex: true }, await renderEditForm(card, key, false, voices)));
+    return c.html(layout({ title: `Edit · ${card.brand}`, noindex: true }, await renderEditForm(card, key, false, voices)));
   });
 
   app.get("/edit/:id", requireAuth, async (c) => {
@@ -77,7 +77,7 @@ export function mountEdit(app: Hono<AppEnv>): void {
     if (!card) card = emptyCard(id, "");
     const { items: voices } = await loadVoiceIndex(c.env.BUCKET, id);
     return c.html(
-      layout({ title: `tending to · ${card.brand || id}`, noindex: true }, await renderEditForm(card, key, auth.role === "admin", voices))
+      layout({ title: `Edit · ${card.brand || id}`, noindex: true }, await renderEditForm(card, key, auth.role === "admin", voices))
     );
   });
 

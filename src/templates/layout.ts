@@ -696,12 +696,20 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   border: 1px solid var(--line);
   border-radius: 10px;
 }
-.edit-wrap .card-share canvas {
+.edit-wrap .card-share #cardQr {
   background: #fff;
   padding: 6px;
   border-radius: 6px;
   flex-shrink: 0;
   display: block;
+  width: 132px;
+  height: 132px;
+}
+.edit-wrap .card-share #cardQr img,
+.edit-wrap .card-share #cardQr canvas {
+  display: block;
+  width: 120px;
+  height: 120px;
 }
 .edit-wrap .card-share-body {
   flex: 1;
