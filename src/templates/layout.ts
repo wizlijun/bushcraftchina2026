@@ -486,7 +486,7 @@ button, input, textarea, select {
 }
 .voice-tooltip {
   position: absolute;
-  bottom: 186px;
+  bottom: 200px;
   right: 24px;
   padding: 7px 14px;
   border-radius: 999px;
