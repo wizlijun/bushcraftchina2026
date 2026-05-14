@@ -311,6 +311,8 @@ button, input, textarea, select {
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   transition: transform 150ms, box-shadow 150ms;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .voice-trigger:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(74, 93, 58, 0.45); }
 .voice-trigger.recording {
@@ -361,6 +363,8 @@ button, input, textarea, select {
   pointer-events: none;
   box-shadow: 0 4px 14px rgba(199, 66, 59, 0.35);
   animation: voiceStatusIn 200ms ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .voice-status[hidden] { display: none; }
 .voice-status-dot {
@@ -394,6 +398,8 @@ button, input, textarea, select {
   z-index: 11;
   pointer-events: none;
   animation: voiceStatusIn 200ms ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .voice-tooltip[hidden] { display: none; }
 .voice-tooltip::after {
