@@ -4,6 +4,55 @@ import type { PageMeta } from "../utils/seo";
 import { escapeHtml } from "../utils/escape";
 
 const GLOBAL_CSS = `
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/playfair-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/playfair-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/playfair-i400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/merri-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/mont-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/mont-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/mont-600.woff2') format('woff2');
+}
 :root {
   --bg: #F5F2EB;
   --fg: #2C2C2C;
@@ -57,6 +106,8 @@ button, input, textarea, select {
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -116,6 +167,12 @@ button, input, textarea, select {
   justify-content: center;
   padding: 0 18px;
   z-index: 10;
+}
+.flip-trigger, .flip-btn-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 .flip-trigger:hover, .flip-btn-back:hover { background: #FDFAF2; }
 .card .specialty {
@@ -314,8 +371,10 @@ button, input, textarea, select {
   transition: transform 150ms, box-shadow 150ms;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
-.voice-trigger:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(74, 93, 58, 0.45); }
+.voice-trigger:hover { transform: translateZ(0) scale(1.05); box-shadow: 0 6px 18px rgba(74, 93, 58, 0.45); }
 .voice-trigger.recording {
   background: #C7423B;
   color: #fff;
@@ -366,6 +425,8 @@ button, input, textarea, select {
   animation: voiceStatusIn 200ms ease;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 .voice-status[hidden] { display: none; }
 .voice-status-dot {
@@ -401,6 +462,8 @@ button, input, textarea, select {
   animation: voiceStatusIn 200ms ease;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 .voice-tooltip[hidden] { display: none; }
 .voice-tooltip::after {
@@ -853,9 +916,9 @@ export function layout(
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>${m.title}</title>
 ${raw(renderMeta(m))}
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<link rel="preload" href="/fonts/playfair-400.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/playfair-600.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin />
 <style>${raw(GLOBAL_CSS)}</style>
 </head>
 <body>
