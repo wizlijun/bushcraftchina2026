@@ -38,13 +38,15 @@ wrangler r2 object put bushcraftchina2026/keys.json --file keys.json
 ## 路由概览
 
 ### 公开页面
-- `GET /` — 首页，随机顺序展示所有卡片
-- `GET /card/:id` — 单卡片直链
+- `GET /` — 首页，随机顺序展示已发布（有 logo）的卡片
+- `GET /card/:id` — 单卡片直链（无论是否已发布）
 - `GET /images/:id/:filename` — 卡片图片
+- `GET /voices/:cardId/:filename` — 访客语音文件（缓存 30 天）
+- `GET /sitemap.xml`、`GET /robots.txt` — SEO
 
 ### 编辑入口
-- `GET /edit?key=xxx` — 管理员看到列表；工匠 key 直接进自己的表单
-- `GET /edit/:id?key=xxx` — 单卡片编辑表单
+- `GET /edit?key=xxx` — admin 看 Admin Desk 列表（含每卡的 🎤 N 语音计数）；工匠 key 直接进自己的编辑表单
+- `GET /edit/:id?key=xxx` — 单卡片编辑表单（含访客语音列表 + 二维码 + 复制链接）
 - `POST /edit/:id?key=xxx` — 提交编辑（multipart/form-data）
 
 ### JSON API
@@ -54,6 +56,11 @@ wrangler r2 object put bushcraftchina2026/keys.json --file keys.json
 - `POST /api/cards?key=admin` — **upsert**：id 不存在则新建，存在则按字段合并更新（详见下方）
 - `GET /api/card/:id/edit-link?key=admin` — 查询该卡片的编辑链接（含工匠 key）
 - `DELETE /api/card/:id?key=admin` — 删除卡片（仅管理员）
+
+### 访客语音 API
+- `POST /api/voice/:cardId` — 公开匿名提交语音（5–120s，≤1MB，webm/mp4/ogg/m4a/mp3，每 IP 每日 50 条上限）
+- `GET /api/card/:id/voices?key=xxx` — 列出该卡片的语音 meta（admin 或该卡 key）
+- `DELETE /api/voice/:cardId/:voiceId?key=xxx` — 删除单条语音（admin 或该卡 key）
 
 ## 接口：新建或更新卡片（供 agent 使用）
 
@@ -276,8 +283,27 @@ npm run test
 npm run typecheck
 ```
 
+## 访客语音留言
+
+- 卡片正反两面右下角的绿色 mic 按钮，长按 250ms 触发录音
+- 按钮左侧横向滑出红色状态条（脉动点 + 实时计时），按钮上方浮出 "RELEASE TO STOP" tooltip
+- 松开后弹出底部 sheet：试听 / 重录 / 发送，右上角 × 关闭
+- 限制：5s ≤ 时长 ≤ 120s，文件 ≤ 1MB，每个 IP 每天 ≤ 50 条
+- 元数据：哈希后的 IP、country、city、UA、时长、size、创建时间（原始 IP 不落盘）
+- 工匠和 admin 在编辑页能看到该卡的语音列表（时间 · 国家 · 时长 + 播放 + 删除）
+- 后端：音频对象 `voices/<cardId>/<voiceId>.<ext>`，meta 索引 `voices/<cardId>/index.json`，限流计数 `voices/_rate/<date>/<ip-hash>.txt`
+
+部署前需注入 IP 哈希盐：
+
+```bash
+echo "$(node -e "console.log(Array.from(crypto.getRandomValues(new Uint8Array(32)), b=>b.toString(16).padStart(2,'0')).join(''))")" \
+  | npx wrangler secret put ADMIN_SALT
+```
+
 ## 限制
 
 - 单张图片 ≤ 5MB，仅 jpg/png/webp
 - 卡片 id 限定 `[a-z0-9-]+`
 - 每张卡片最多 3 张作品照片
+- 单条语音 ≤ 1MB，时长 5–120s
+- 每个 IP 每天最多 50 条语音
