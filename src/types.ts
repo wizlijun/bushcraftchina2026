@@ -8,7 +8,7 @@ export interface Card {
   address?: string;
   contact: {
     wechat?: string;
-    phone?: string;
+    email?: string;
   };
   socials: {
     web?: string;

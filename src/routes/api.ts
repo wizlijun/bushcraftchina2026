@@ -33,13 +33,18 @@ export function mountApi(app: Hono<AppEnv>): void {
   });
 
   app.post("/api/cards", requireAuth, requireAdmin, async (c) => {
-    const body = (await c.req.json()) as { id?: string; brand?: string };
+    const body = (await c.req.json()) as Partial<Card> & { id?: string };
     const id = (body.id ?? "").trim();
     const brand = (body.brand ?? "").trim();
     if (!/^[a-z0-9-]+$/.test(id)) return c.text("the id isn’t quite right — lowercase letters, numbers or hyphens only", 400);
     if (!brand) return c.text("please give the workshop a name", 400);
     if (await getCard(c.env.BUCKET, id)) return c.text("that id is already taken", 400);
-    const card = emptyCard(id, brand);
+    const card: Card = {
+      ...emptyCard(id, brand),
+      ...body,
+      id,
+      brand,
+    };
     await putCard(c.env.BUCKET, card);
     const idx = await listIndex(c.env.BUCKET);
     await upsertIndexEntry(c.env.BUCKET, { id, brand, order: idx.length + 1 });
@@ -47,7 +52,16 @@ export function mountApi(app: Hono<AppEnv>): void {
     const newKey = generateKey();
     keys.cards[id] = newKey;
     await saveKeys(c.env.BUCKET, keys);
-    return c.json({ card, key: newKey });
+    const origin = new URL(c.req.url).origin;
+    return c.json({
+      ok: true,
+      id,
+      brand,
+      key: newKey,
+      edit_url: `${origin}/edit/${encodeURIComponent(id)}?key=${encodeURIComponent(newKey)}`,
+      card_url: `${origin}/card/${encodeURIComponent(id)}`,
+      card,
+    });
   });
 
   app.delete("/api/card/:id", requireAuth, requireAdmin, async (c) => {

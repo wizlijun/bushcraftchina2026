@@ -22,7 +22,7 @@ export function mountPages(app: Hono<AppEnv>): void {
     const cards: Card[] = await loadAllCards(c.env.BUCKET);
     if (cards.length === 0) {
       const empty = html`<div class="empty">no makers gathered yet · the fire is only just lit</div>`;
-      return c.html(layout("a gathering of makers · bushcraft china", await empty));
+      return c.html(layout("Bushcraft China Community · A Show of Crafters & Their Works", await empty));
     }
     const ordered = shuffled(cards);
     const rendered = await Promise.all(
@@ -30,7 +30,7 @@ export function mountPages(app: Hono<AppEnv>): void {
     );
     const body = html`<main class="feed">${raw(rendered.join(""))}</main>`;
     const headers = { "cache-control": "no-store" };
-    return c.html(layout("a gathering of makers · bushcraft china", await body), 200, headers);
+    return c.html(layout("Bushcraft China Community · A Show of Crafters & Their Works", await body), 200, headers);
   });
 
   app.get("/card/:id", async (c) => {
@@ -38,7 +38,7 @@ export function mountPages(app: Hono<AppEnv>): void {
     if (!card) return c.text("we couldn’t find that maker", 404);
     const cardHtml = await renderCard(card);
     const body = html`<main class="feed">${cardHtml}</main>`;
-    return c.html(layout(`${card.brand} · bushcraft china`, await body));
+    return c.html(layout(`${card.brand} · Bushcraft China Community`, await body));
   });
 
   app.get("/images/:id/:filename{.+}", async (c) => {

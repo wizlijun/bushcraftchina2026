@@ -141,7 +141,7 @@ export function mountEdit(app: Hono<AppEnv>): void {
     card.description = String(fd.get("description") ?? "").trim();
     card.contact = {
       wechat: String(fd.get("wechat") ?? "").trim() || undefined,
-      phone: String(fd.get("phone") ?? "").trim() || undefined,
+      email: String(fd.get("email") ?? "").trim() || undefined,
     };
 
     card.socials = {
@@ -171,12 +171,28 @@ export function mountEdit(app: Hono<AppEnv>): void {
         }
         card.logo = logoPath;
       }
-      const productFiles = fd.getAll("product");
-      let i = 0;
-      for (const f of productFiles) {
-        const path = await processImage(c.env.BUCKET, id, f, `product-${i++}`);
-        if (path) card.products.push(path);
+      const nextProducts: string[] = [];
+      for (let i = 0; i < 3; i++) {
+        const existing = card.products[i];
+        const remove = fd.get(`remove_product_${i}`);
+        const path = await processImage(c.env.BUCKET, id, fd.get(`product_${i}`), `product-${i}`);
+        if (path) {
+          if (existing && existing.startsWith("/images/")) {
+            await deleteObject(c.env.BUCKET, existing.slice(1));
+          }
+          nextProducts.push(path);
+        } else if (remove) {
+          if (existing && existing.startsWith("/images/")) {
+            await deleteObject(c.env.BUCKET, existing.slice(1));
+          }
+        } else if (existing) {
+          nextProducts.push(existing);
+        }
       }
+      for (const orphan of card.products.slice(3)) {
+        if (orphan.startsWith("/images/")) await deleteObject(c.env.BUCKET, orphan.slice(1));
+      }
+      card.products = nextProducts;
     } catch (err) {
       if (err instanceof HttpError) return c.text(err.message, err.status as 400);
       throw err;
