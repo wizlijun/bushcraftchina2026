@@ -99,7 +99,7 @@ export function renderCard(
       </footer>
     </div>
     ${raw(backFace)}
-    ${raw(voiceBtn)}
   </div>
+  ${raw(voiceBtn)}
 </section>`;
 }

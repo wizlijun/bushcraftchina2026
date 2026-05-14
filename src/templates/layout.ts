@@ -95,12 +95,19 @@ button, input, textarea, select {
   scroll-snap-type: y mandatory;
 }
 .card {
+  position: relative;
   scroll-snap-align: start;
   height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.card .voice-trigger,
+.card .voice-tooltip,
+.card .voice-status {
+  position: absolute;
+  z-index: 50;
 }
 .card-flip {
   position: relative;
@@ -401,18 +408,14 @@ button, input, textarea, select {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 12;
+  z-index: 50;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   transition: transform 150ms, box-shadow 150ms;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
 }
-.voice-trigger:hover { transform: translateZ(0) scale(1.05); box-shadow: 0 6px 18px rgba(74, 93, 58, 0.45); }
+.voice-trigger:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(74, 93, 58, 0.45); }
 .voice-trigger.recording {
   background: #C7423B;
   color: #fff;
