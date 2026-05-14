@@ -4,6 +4,7 @@ import { mountPages } from "./routes/pages";
 import { mountEdit } from "./routes/edit";
 import { mountApi } from "./routes/api";
 import { mountVoices } from "./routes/voices";
+import { mountLikes } from "./routes/likes";
 
 const app = new Hono<AppEnv>();
 
@@ -18,5 +19,6 @@ mountPages(app);
 mountEdit(app);
 mountApi(app);
 mountVoices(app);
+mountLikes(app);
 
 export default app;

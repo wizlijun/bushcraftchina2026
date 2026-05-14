@@ -19,6 +19,18 @@ const ICON_LOCATION = `<svg width="18" height="18" viewBox="0 0 24 24"><circle c
 
 const ICON_MIC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0"/><path d="M12 17v4"/><path d="M9 21h6"/></svg>`;
 
+const ICON_SHARE = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
+
+const ICON_HEART_OUTLINE = `<svg class="heart heart-outline" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+
+const ICON_HEART_FILL = `<svg class="heart heart-fill" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+
+function renderLikeButton(card: Card): string {
+  const count = card.like_count ?? 0;
+  const badge = count > 0 ? `<span class="like-count">${count}</span>` : "";
+  return `<button class="like-trigger" type="button" data-card="${escapeHtml(card.id)}" aria-label="like this maker" aria-pressed="false">${ICON_HEART_OUTLINE}${ICON_HEART_FILL}${badge}</button>`;
+}
+
 function renderVoiceButton(card: Card): string {
   const count = card.voice_count ?? 0;
   const badge = count > 0 ? `<span class="voice-count">${count}</span>` : "";
@@ -73,10 +85,13 @@ export function renderCard(
   const flipLabel = `<button class="flip-trigger" onclick="this.closest('.card-flip').classList.toggle('flipped')">Works</button>`;
   const backFlipBtn = `<button class="flip-btn-back" onclick="this.closest('.card-flip').classList.toggle('flipped')">Crafter</button>`;
   const voiceBtn = renderVoiceButton(card);
+  const likeBtn = renderLikeButton(card);
   const backFace = `<div class="card-back"><div class="back-grid">${renderProducts(card.products, card.brand)}</div>${backFlipBtn}</div>`;
-  const heading = opts.asDetail
+  const headingInner = opts.asDetail
     ? html`<h1 class="brand serif">${card.brand}</h1>`
     : html`<h2 class="brand serif">${card.brand}</h2>`;
+  const shareBtn = `<button class="share-trigger" type="button" data-share="/card/${encodeURIComponent(card.id)}" data-brand="${escapeHtml(card.brand)}" aria-label="Copy share link" title="Copy share link">${ICON_SHARE}</button>`;
+  const heading = html`<div class="brand-row">${headingInner}${raw(shareBtn)}</div>`;
   const logoAlt = card.brand ? `${card.brand} logo` : "workshop logo";
 
   return html`<section class="card" data-id="${card.id}">
@@ -100,6 +115,7 @@ export function renderCard(
     </div>
     ${raw(backFace)}
   </div>
+  ${raw(likeBtn)}
   ${raw(voiceBtn)}
 </section>`;
 }

@@ -18,6 +18,7 @@ export interface Card {
   products: string[];
   links: Array<{ label: string; url: string }>;
   voice_count?: number;
+  like_count?: number;
 }
 
 export interface VoiceMessage {

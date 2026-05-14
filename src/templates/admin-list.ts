@@ -7,7 +7,8 @@ export function renderAdminList(
   index: CardIndexEntry[],
   keys: Keys,
   adminKey: string,
-  voiceCounts: Record<string, number> = {}
+  voiceCounts: Record<string, number> = {},
+  likeCounts: Record<string, number> = {}
 ): HtmlEscapedString | Promise<HtmlEscapedString> {
   const sorted = [...index].sort((a, b) => a.order - b.order);
   const rows = sorted
@@ -15,6 +16,10 @@ export function renderAdminList(
       const cardKey = keys.cards[e.id] ?? "";
       const shareUrl = `/edit/${encodeURIComponent(e.id)}?key=${encodeURIComponent(cardKey)}`;
       const vc = voiceCounts[e.id] ?? 0;
+      const lc = likeCounts[e.id] ?? 0;
+      const likePill = lc > 0
+        ? `<span class="like-pill like-pill-on">❤ ${lc}</span>`
+        : `<span class="like-pill">♡ 0</span>`;
       const voicePill = vc > 0
         ? `<span class="voice-pill voice-pill-on">🎤 ${vc}</span>`
         : `<span class="voice-pill">🎤 0</span>`;
@@ -24,6 +29,7 @@ export function renderAdminList(
           <div class="meta">id · ${escapeHtml(e.id)} &nbsp;·&nbsp; key · ${escapeHtml(cardKey)}</div>
         </div>
         <div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          ${likePill}
           ${voicePill}
           <button type="button" class="ghost" onclick="copyShareLink(this,'${escapeHtml(shareUrl)}')">Copy Link（复制给工匠）</button>
           <a class="ghost" href="/edit/${encodeURIComponent(e.id)}?key=${encodeURIComponent(adminKey)}">Admin Edit（管理员编辑）</a>

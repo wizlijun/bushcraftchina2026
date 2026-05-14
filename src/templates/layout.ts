@@ -105,7 +105,8 @@ button, input, textarea, select {
 }
 .card .voice-trigger,
 .card .voice-tooltip,
-.card .voice-status {
+.card .voice-status,
+.card .like-trigger {
   position: absolute;
   z-index: 50;
 }
@@ -192,6 +193,39 @@ button, input, textarea, select {
   margin-bottom: 14px;
   padding-left: 18px;
 }
+.card .brand-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-right: 18px;
+}
+.card .brand-row .brand {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.share-trigger {
+  flex-shrink: 0;
+  margin-top: 18px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: color 150ms, opacity 150ms;
+}
+.share-trigger:hover,
+.share-trigger:focus-visible {
+  color: var(--accent);
+  opacity: 1;
+  outline: none;
+}
+.share-trigger:active { transform: scale(0.92); }
 .flip-trigger, .flip-btn-back {
   position: absolute;
   top: 24px;
@@ -442,6 +476,57 @@ button, input, textarea, select {
   text-align: center;
   letter-spacing: 0;
   border: 1.5px solid var(--accent);
+}
+.like-trigger {
+  position: absolute;
+  bottom: 130px;
+  right: 84px;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: #B0A89C;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transition: transform 150ms, color 150ms, box-shadow 150ms;
+}
+.like-trigger:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14); }
+.like-trigger .heart { display: block; }
+.like-trigger .heart-fill { display: none; }
+.like-trigger.liked { color: #E54B4B; }
+.like-trigger.liked .heart-outline { display: none; }
+.like-trigger.liked .heart-fill { display: block; }
+.like-trigger.bump { animation: likeBump 360ms ease; }
+@keyframes likeBump {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.25); }
+  60%  { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+.like-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #fff;
+  color: #E54B4B;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  letter-spacing: 0;
+  border: 1.5px solid #E54B4B;
 }
 .voice-status {
   position: absolute;
@@ -883,7 +968,8 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   margin-top: 4px;
   word-break: break-all;
 }
-.voice-pill {
+.voice-pill,
+.like-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -903,6 +989,11 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
+  font-weight: 600;
+}
+.like-pill-on {
+  border-color: #E54B4B;
+  color: #E54B4B;
   font-weight: 600;
 }
 `;
@@ -989,6 +1080,96 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
   function dismiss(){h.classList.add('gone');setTimeout(function(){h.remove()},800);}
   feed.addEventListener('scroll',dismiss,{once:true});
   setTimeout(dismiss,4000);
+})();
+(function(){
+  var triggers=document.querySelectorAll('.like-trigger');
+  if(!triggers.length) return;
+  function storageKey(id){return 'bcc:liked:'+id;}
+  function isLiked(id){try{return localStorage.getItem(storageKey(id))==='1';}catch(e){return false;}}
+  function setLiked(id,v){try{if(v)localStorage.setItem(storageKey(id),'1');else localStorage.removeItem(storageKey(id));}catch(e){}}
+  function applyState(btn,liked){
+    btn.classList.toggle('liked',liked);
+    btn.setAttribute('aria-pressed',liked?'true':'false');
+  }
+  function setCount(btn,n){
+    var badge=btn.querySelector('.like-count');
+    if(n>0){
+      if(!badge){badge=document.createElement('span');badge.className='like-count';btn.appendChild(badge);}
+      badge.textContent=String(n);
+    }else if(badge){
+      badge.remove();
+    }
+  }
+  triggers.forEach(function(btn){
+    var id=btn.getAttribute('data-card');
+    if(!id) return;
+    applyState(btn,isLiked(id));
+  });
+  function readCount(btn){
+    var badge=btn.querySelector('.like-count');
+    if(!badge) return 0;
+    var n=parseInt(badge.textContent||'0',10);
+    return isNaN(n)?0:n;
+  }
+  triggers.forEach(function(btn){
+    btn.addEventListener('click',async function(ev){
+      ev.preventDefault();ev.stopPropagation();
+      var id=btn.getAttribute('data-card');
+      if(!id) return;
+      if(btn.dataset.busy==='1') return;
+      btn.dataset.busy='1';
+      var wasLiked=isLiked(id);
+      var goingTo=!wasLiked;
+      var prevCount=readCount(btn);
+      var optimistic=Math.max(0,prevCount+(goingTo?1:-1));
+      applyState(btn,goingTo);
+      setCount(btn,optimistic);
+      setLiked(id,goingTo);
+      if(goingTo){btn.classList.remove('bump');void btn.offsetWidth;btn.classList.add('bump');}
+      try{
+        var res=await fetch('/api/like/'+encodeURIComponent(id),{
+          method:'POST',
+          headers:{'content-type':'application/json'},
+          body:JSON.stringify({action:goingTo?'like':'unlike'}),
+        });
+        if(!res.ok) throw new Error('http '+res.status);
+        var data=await res.json();
+        if(typeof data.like_count==='number'){
+          document.querySelectorAll('.like-trigger[data-card="'+id+'"]').forEach(function(b){setCount(b,data.like_count);});
+        }
+      }catch(err){
+        applyState(btn,wasLiked);
+        setCount(btn,prevCount);
+        setLiked(id,wasLiked);
+      }finally{
+        btn.dataset.busy='';
+      }
+    });
+  });
+})();
+(function(){
+  var triggers=document.querySelectorAll('.share-trigger');
+  if(!triggers.length) return;
+  var toast=document.getElementById('voiceToast');
+  function showToast(msg){if(!toast)return;toast.textContent=msg;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show');},2200);}
+  triggers.forEach(function(btn){
+    btn.addEventListener('click',async function(ev){
+      ev.preventDefault();ev.stopPropagation();
+      var path=btn.getAttribute('data-share')||'/';
+      var brand=btn.getAttribute('data-brand')||'';
+      var url=window.location.origin+path;
+      var title=brand?brand+' · Bushcraft China':'Bushcraft China';
+      if(navigator.share){
+        try{await navigator.share({title:title,url:url});return;}
+        catch(err){if(err&&err.name==='AbortError')return;}
+      }
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        try{await navigator.clipboard.writeText(url);showToast('Link copied');return;}
+        catch(err){}
+      }
+      window.prompt('Copy this link',url);
+    });
+  });
 })();
 (function(){
   var MIN_MS=5000, MAX_MS=120000, HOLD_MS=250;

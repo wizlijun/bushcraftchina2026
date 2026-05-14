@@ -137,6 +137,14 @@ export function renderEditForm(
   </form>
 
   <h2>voice notes from visitors（访客语音留言）</h2>
+  <div class="row" style="gap:8px;margin:-4px 0 14px;flex-wrap:wrap">
+    ${raw((card.like_count ?? 0) > 0
+      ? `<span class="like-pill like-pill-on">❤ ${card.like_count}</span>`
+      : `<span class="like-pill">♡ 0</span>`)}
+    ${raw((card.voice_count ?? voices.length) > 0
+      ? `<span class="voice-pill voice-pill-on">🎤 ${card.voice_count ?? voices.length}</span>`
+      : `<span class="voice-pill">🎤 0</span>`)}
+  </div>
   ${raw(renderVoiceItems(card.id, voices, key))}
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
