@@ -725,13 +725,18 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   margin-bottom: 6px;
 }
 .edit-wrap .card-share-url {
+  display: block;
   font-family: "Montserrat", sans-serif;
   font-size: 12px;
-  color: var(--fg);
+  color: var(--accent);
   word-break: break-all;
   margin-bottom: 10px;
   line-height: 1.4;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
 }
+.edit-wrap .card-share-url:hover { opacity: 0.85; }
 .edit-wrap .preview-img {
   width: 140px; height: 140px;
   object-fit: cover;

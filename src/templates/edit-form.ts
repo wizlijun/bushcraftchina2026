@@ -122,16 +122,15 @@ export function renderEditForm(
       <input type="text" name="address" placeholder="Hangzhou, China（城市，国家）" value="${card.address ?? ""}" />
     </div>
 
-    <div style="display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap">
+    <div style="margin-top:8px">
       <button class="primary" type="submit" name="action" value="save">save（保存）</button>
-      <a class="ghost ghost-lg" href="/card/${encodeURIComponent(card.id)}" target="_blank" id="cardPageLink">Card（专属页面）</a>
     </div>
 
     <div class="card-share" id="cardShare" data-path="/card/${encodeURIComponent(card.id)}">
       <div id="cardQr"></div>
       <div class="card-share-body">
         <div class="card-share-label">scan or share（扫码或分享）</div>
-        <div class="card-share-url" id="cardShareUrl">—</div>
+        <a class="card-share-url" id="cardShareUrl" href="/card/${encodeURIComponent(card.id)}" target="_blank" rel="noopener">—</a>
         <button type="button" class="ghost" id="cardShareCopy">copy URL（复制链接）</button>
       </div>
     </div>
@@ -149,9 +148,10 @@ export function renderEditForm(
   var url = window.location.origin + path;
   var urlEl = document.getElementById('cardShareUrl');
   var copyBtn = document.getElementById('cardShareCopy');
-  var pageLink = document.getElementById('cardPageLink');
-  if(urlEl) urlEl.textContent = url;
-  if(pageLink) pageLink.href = url;
+  if(urlEl){
+    urlEl.textContent = url;
+    urlEl.setAttribute('href', url);
+  }
   var qrEl = document.getElementById('cardQr');
   if(qrEl && typeof QRCode !== 'undefined'){
     qrEl.innerHTML = '';
