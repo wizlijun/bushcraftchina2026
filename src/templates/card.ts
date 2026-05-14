@@ -90,7 +90,7 @@ export function renderCard(
         ${heading}
         <div class="specialty">${card.specialty}</div>
         <hr class="sep" />
-        ${card.owner ? html`<div class="owner">by the hand of · ${card.owner}</div>` : ""}
+        ${card.owner ? html`<div class="owner">by the hand of ${card.owner}</div>` : ""}
         ${card.description ? html`<div class="desc"><span class="desc-q desc-q-open">“</span><span class="desc-text">${card.description}</span><span class="desc-q desc-q-close">”</span></div>` : ""}
       </div>
       <footer class="card-footer">
