@@ -833,7 +833,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
     if(state.maxTimer){clearTimeout(state.maxTimer);state.maxTimer=null;}
     if(state.tickTimer){clearInterval(state.tickTimer);state.tickTimer=null;}
     state.armed=false;
-    if(full){state.cardId=null;state.btn=null;state.inline=null;state.chunks=[];state.blob=null;state.mime='';state.durationMs=0;stopStream();}
+    if(full){state.cardId=null;state.btn=null;state.inline=null;state.rec=null;state.chunks=[];state.blob=null;state.mime='';state.durationMs=0;stopStream();}
   }
   function openSheet(){
     sheet.hidden=false;
@@ -866,6 +866,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
     }
     state.chunks=[];
     state.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)state.chunks.push(e.data);};
+    state.rec.onerror=function(){
+      showToast('Recording failed, please retry');
+      reset(true);
+    };
     state.rec.onstop=function(){
       var actualMime=state.mime||(state.chunks[0]?state.chunks[0].type:'audio/webm');
       state.blob=new Blob(state.chunks,{type:actualMime});
@@ -902,9 +906,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
     try{state.rec.stop();}catch(e){}
     if(state.maxTimer){clearTimeout(state.maxTimer);state.maxTimer=null;}
   }
+  function isBusy(){
+    if(state.armed)return true;
+    if(state.rec&&state.rec.state==='recording')return true;
+    if(sheet&&!sheet.hidden)return true;
+    return false;
+  }
   function onPointerDown(e){
     var btn=e.currentTarget;
-    if(state.armed||state.rec)return;
+    if(isBusy())return;
     state.btn=btn;
     state.cardId=btn.getAttribute('data-card');
     state.armed=true;
