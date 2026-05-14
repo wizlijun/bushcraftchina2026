@@ -396,7 +396,7 @@ button, input, textarea, select {
 }
 .voice-trigger {
   position: absolute;
-  bottom: 24px;
+  bottom: 130px;
   right: 24px;
   width: 48px; height: 48px;
   border-radius: 50%;
@@ -445,7 +445,7 @@ button, input, textarea, select {
 }
 .voice-status {
   position: absolute;
-  bottom: 24px;
+  bottom: 130px;
   right: 80px;
   height: 48px;
   padding: 0 18px;
@@ -486,7 +486,7 @@ button, input, textarea, select {
 }
 .voice-tooltip {
   position: absolute;
-  bottom: 80px;
+  bottom: 186px;
   right: 24px;
   padding: 7px 14px;
   border-radius: 999px;
