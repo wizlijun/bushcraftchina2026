@@ -4,10 +4,67 @@ import type { PageMeta } from "../utils/seo";
 import { escapeHtml } from "../utils/escape";
 
 const GLOBAL_CSS = `
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lora-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/lora-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lora-i400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/caveat-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/caveat-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/raleway-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/raleway-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/raleway-600.woff2') format('woff2');
+}
 :root {
-  --font-serif-display: "Iowan Old Style", "Hoefler Text", "Charter", Georgia, "Noto Serif", "Songti SC", "Source Han Serif SC", serif;
-  --font-serif-body: Georgia, "Iowan Old Style", "Charter", "Noto Serif", "Times New Roman", "Songti SC", serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Noto Sans", "Microsoft YaHei", sans-serif;
+  --font-serif-display: "Lora", "Iowan Old Style", "Hoefler Text", Georgia, "Noto Serif", "Songti SC", serif;
+  --font-serif-body: "Lora", Georgia, "Iowan Old Style", "Noto Serif", "Times New Roman", "Songti SC", serif;
+  --font-sans: "Raleway", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Noto Sans", "Microsoft YaHei", sans-serif;
+  --font-script: "Caveat", "Snell Roundhand", "Bradley Hand", "Apple Chancery", cursive;
   --bg: #F5F2EB;
   --fg: #2C2C2C;
   --muted: #6B6358;
@@ -75,13 +132,13 @@ button, input, textarea, select {
   padding: 0;
 }
 .card-header {
-  padding: 20px 32px 12px;
+  padding: 28px 32px 8px;
   flex-shrink: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 .site-logo {
-  width: 256px; height: 256px;
+  width: 200px; height: 200px;
   object-fit: contain;
 }
 .card-body {
@@ -89,14 +146,17 @@ button, input, textarea, select {
   padding: 0 32px;
   display: flex;
   flex-direction: column;
+  text-align: left;
 }
 .card .brand {
   font-family: var(--font-serif-display);
-  font-size: 44px;
+  font-size: 42px;
   font-weight: 700;
   letter-spacing: 0.3px;
   line-height: 1.1;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 14px;
+  padding-left: 18px;
 }
 .flip-trigger, .flip-btn-back {
   position: absolute;
@@ -135,25 +195,29 @@ button, input, textarea, select {
   color: var(--muted);
   letter-spacing: 3px;
   text-transform: uppercase;
-  font-weight: 400;
-  margin-bottom: 12px;
+  font-weight: 500;
+  margin-bottom: 18px;
+  padding-left: 18px;
 }
 .card .sep {
   border: none;
   border-top: 1px solid var(--line);
-  width: 32px;
-  margin: 0 0 12px;
+  width: 40px;
+  margin: 0 0 16px 18px;
 }
 .card .owner {
-  font-family: var(--font-serif-display);
-  font-size: 16px;
-  font-style: italic;
+  font-family: var(--font-script);
+  font-size: 26px;
+  font-weight: 500;
+  font-style: normal;
   color: var(--muted);
-  letter-spacing: 0.2px;
+  letter-spacing: 0;
+  line-height: 1.1;
+  padding-left: 18px;
 }
 .card .desc {
   margin: auto 0 0;
-  padding: 44px 4px 36px;
+  padding: 48px 24px 40px 6px;
   position: relative;
 }
 .card .desc-text {
@@ -162,7 +226,7 @@ button, input, textarea, select {
   font-weight: 400;
   font-style: normal;
   font-size: 17px;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--fg);
   white-space: pre-wrap;
 }
