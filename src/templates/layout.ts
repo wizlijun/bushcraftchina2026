@@ -340,38 +340,70 @@ button, input, textarea, select {
   letter-spacing: 0;
   border: 1.5px solid var(--accent);
 }
-.recording-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 9000;
+.voice-status {
+  position: absolute;
+  bottom: 24px;
+  right: 80px;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #C7423B;
+  color: #fff;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 18px;
+  gap: 10px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  z-index: 11;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(199, 66, 59, 0.35);
+  animation: voiceStatusIn 200ms ease;
+}
+.voice-status[hidden] { display: none; }
+.voice-status-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  animation: voiceDotPulse 1s ease-in-out infinite;
+}
+@keyframes voiceDotPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@keyframes voiceStatusIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.voice-tooltip {
+  position: absolute;
+  bottom: 80px;
+  right: 24px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.82);
   color: #fff;
   font-family: "Montserrat", sans-serif;
-  pointer-events: none;
-}
-.recording-overlay[hidden] { display: none; }
-.rec-circle {
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  background: #C7423B;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 1px;
-  animation: voicePulse 1.1s ease-in-out infinite;
-}
-.rec-hint {
-  font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  opacity: 0.85;
+  white-space: nowrap;
+  z-index: 11;
+  pointer-events: none;
+  animation: voiceStatusIn 200ms ease;
+}
+.voice-tooltip[hidden] { display: none; }
+.voice-tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  right: 22px;
+  width: 8px; height: 8px;
+  background: rgba(0, 0, 0, 0.82);
+  transform: rotate(45deg);
 }
 .voice-sheet {
   position: fixed;
@@ -728,10 +760,6 @@ ${body}
   </div>
   <span class="swipe-hint-label">Scroll</span>
 </div>
-<div class="recording-overlay" id="recOverlay" hidden>
-  <div class="rec-circle"><span id="recTime">0:00</span></div>
-  <div class="rec-hint">Recording · release to stop</div>
-</div>
 <div class="voice-sheet" id="voiceSheet" hidden>
   <div class="voice-sheet-header"><span id="voiceSheetTitle">Your voice note · 0:00</span></div>
   <audio id="voiceSheetAudio" controls preload="metadata"></audio>
@@ -760,8 +788,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
   if(!triggers.length) return;
   var supported=typeof MediaRecorder!=='undefined' && !!navigator.mediaDevices && !!navigator.mediaDevices.getUserMedia;
   if(!supported){triggers.forEach(function(b){b.style.display='none'});return;}
-  var overlay=document.getElementById('recOverlay');
-  var recTime=document.getElementById('recTime');
+  function inlineFor(btn){
+    var parent=btn.parentElement;
+    if(!parent) return {tip:null,status:null,time:null};
+    return {
+      tip: parent.querySelector('.voice-tooltip'),
+      status: parent.querySelector('.voice-status'),
+      time: parent.querySelector('.voice-status-time'),
+    };
+  }
   var sheet=document.getElementById('voiceSheet');
   var sheetAudio=document.getElementById('voiceSheetAudio');
   var sheetTitle=document.getElementById('voiceSheetTitle');
@@ -769,19 +804,22 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
   var btnSend=document.getElementById('voiceSend');
   var btnCancel=document.getElementById('voiceCancel');
   var toast=document.getElementById('voiceToast');
-  var state={cardId:null,btn:null,stream:null,rec:null,chunks:[],startTs:0,durationMs:0,blob:null,mime:'',holdTimer:null,maxTimer:null,tickTimer:null,armed:false};
+  var state={cardId:null,btn:null,inline:null,stream:null,rec:null,chunks:[],startTs:0,durationMs:0,blob:null,mime:'',holdTimer:null,maxTimer:null,tickTimer:null,armed:false};
   function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show')},2200);}
   function fmt(ms){var s=Math.floor(ms/1000);var m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
   function pickMime(){var c=['audio/webm;codecs=opus','audio/mp4;codecs=mp4a.40.2','audio/ogg;codecs=opus','audio/webm','audio/mp4'];for(var i=0;i<c.length;i++){if(MediaRecorder.isTypeSupported(c[i]))return c[i];}return '';}
   function stopStream(){if(state.stream){state.stream.getTracks().forEach(function(t){t.stop()});state.stream=null;}}
   function reset(full){
     if(state.btn){state.btn.classList.remove('recording');}
-    overlay.hidden=true;
+    if(state.inline){
+      if(state.inline.tip)state.inline.tip.hidden=true;
+      if(state.inline.status)state.inline.status.hidden=true;
+    }
     if(state.holdTimer){clearTimeout(state.holdTimer);state.holdTimer=null;}
     if(state.maxTimer){clearTimeout(state.maxTimer);state.maxTimer=null;}
     if(state.tickTimer){clearInterval(state.tickTimer);state.tickTimer=null;}
     state.armed=false;
-    if(full){state.cardId=null;state.btn=null;state.chunks=[];state.blob=null;state.mime='';state.durationMs=0;stopStream();}
+    if(full){state.cardId=null;state.btn=null;state.inline=null;state.chunks=[];state.blob=null;state.mime='';state.durationMs=0;stopStream();}
   }
   function openSheet(){
     sheet.hidden=false;
@@ -818,7 +856,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
       var actualMime=state.mime||(state.chunks[0]?state.chunks[0].type:'audio/webm');
       state.blob=new Blob(state.chunks,{type:actualMime});
       stopStream();
-      overlay.hidden=true;
+      if(state.inline){
+        if(state.inline.tip)state.inline.tip.hidden=true;
+        if(state.inline.status)state.inline.status.hidden=true;
+      }
       if(state.btn)state.btn.classList.remove('recording');
       if(state.tickTimer){clearInterval(state.tickTimer);state.tickTimer=null;}
       if(state.durationMs<MIN_MS){
@@ -831,11 +872,13 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
     state.startTs=Date.now();
     state.rec.start();
     if(state.btn)state.btn.classList.add('recording');
-    overlay.hidden=false;
-    recTime.textContent='0:00';
+    state.inline=inlineFor(state.btn);
+    if(state.inline.tip)state.inline.tip.hidden=false;
+    if(state.inline.status)state.inline.status.hidden=false;
+    if(state.inline.time)state.inline.time.textContent='0:00';
     state.tickTimer=setInterval(function(){
       state.durationMs=Date.now()-state.startTs;
-      recTime.textContent=fmt(state.durationMs);
+      if(state.inline&&state.inline.time)state.inline.time.textContent=fmt(state.durationMs);
     },200);
     state.maxTimer=setTimeout(function(){stopRecording();},MAX_MS);
   }

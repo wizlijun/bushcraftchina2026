@@ -22,7 +22,9 @@ const ICON_MIC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" st
 function renderVoiceButton(card: Card): string {
   const count = card.voice_count ?? 0;
   const badge = count > 0 ? `<span class="voice-count">${count}</span>` : "";
-  return `<button class="voice-trigger" type="button" data-card="${escapeHtml(card.id)}" aria-label="press and hold to leave a voice note">${ICON_MIC}${badge}</button>`;
+  return `<div class="voice-tooltip" hidden>RELEASE TO STOP</div>
+<div class="voice-status" hidden><span class="voice-status-dot"></span><span class="voice-status-time">0:00</span></div>
+<button class="voice-trigger" type="button" data-card="${escapeHtml(card.id)}" aria-label="press and hold to leave a voice note">${ICON_MIC}${badge}</button>`;
 }
 
 function renderProducts(products: string[], brand: string): string {
