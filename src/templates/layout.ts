@@ -293,8 +293,8 @@ button, input, textarea, select {
 }
 .voice-trigger {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  bottom: 24px;
+  right: 24px;
   width: 48px; height: 48px;
   border-radius: 50%;
   border: none;
