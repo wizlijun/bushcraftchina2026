@@ -16,7 +16,7 @@ import { hashIp } from "../utils/ip-hash";
 const MIN_DURATION_MS = 5_000;
 const MAX_DURATION_MS = 120_000;
 const MAX_BYTES = 1_024 * 1_024;
-const DAILY_LIMIT_PER_IP = 10;
+const DAILY_LIMIT_PER_IP = 50;
 
 const ALLOWED_TYPES: Record<string, string> = {
   "audio/webm": "webm",

@@ -9,7 +9,7 @@
 - Visitors can leave a 5–120s voice note on any card without authentication.
 - Card owner (with maker key) and admin see the list of voice notes, can play and delete them.
 - Visitor identity is anonymous, but enough metadata (hashed IP, country, city, UA, timestamp, duration) is kept for context and abuse triage.
-- Rate-limited to discourage spam (10 voices/day per IP across all cards).
+- Rate-limited to discourage spam (50 voices/day per IP across all cards).
 - Visitor-facing flow is voice-only; there is no text comment input.
 
 ## User-facing flow
@@ -120,7 +120,7 @@ Validation chain (any failure short-circuits):
 3. `content-type` ∈ {audio/webm, audio/mp4, audio/ogg, audio/x-m4a} → else 415.
 4. body size ≤ 1 MB → else 413 (use Content-Length pre-check; reject before reading full body).
 5. magic-number sniff (first 16 bytes match WebM/EBML, ISO base media, or Ogg) → else 415.
-6. rate limit: read `voices/_rate/<today>/<ip-hash>.txt`, current count < 10 → else 429.
+6. rate limit: read `voices/_rate/<today>/<ip-hash>.txt`, current count < 50 → else 429.
 
 Write order (rollback on failure):
 1. Generate `voiceId`.
@@ -292,7 +292,7 @@ The same section is rendered identically whether accessed via maker key or admin
 
 | Risk | Mitigation |
 |---|---|
-| Bulk submit from one IP | 10/day hard cap, returns 429 |
+| Bulk submit from one IP | 50/day hard cap, returns 429 |
 | Oversize uploads | Content-Length pre-check + 1 MB cap, reject before reading body |
 | Non-audio binary disguised as audio | Content-Type whitelist + first-16-byte magic-number sniff |
 | Scraping/scripted spam | 250ms long-press gesture + 5s minimum + multipart submit deters trivial bots |
@@ -364,7 +364,7 @@ Modified:
 |---|---|
 | Mic placement | Bottom-right of both card faces |
 | Max duration | 120 seconds |
-| Rate limit | 10/day per IP across all cards |
+| Rate limit | 50/day per IP across all cards |
 | Confirm flow | Bottom sheet with Replay/Send/Re-record/Cancel; replay optional |
 | Storage layout | Separate `voices/<cardId>/index.json` with mirrored `voice_count` on card.json |
 | Deletion auth | Maker key OR admin key (same as edit permissions) |

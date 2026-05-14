@@ -954,7 +954,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
     fd.append('duration_ms',String(Math.min(state.durationMs,MAX_MS)));
     try{
       var res=await fetch('/api/voice/'+encodeURIComponent(state.cardId),{method:'POST',body:fd});
-      if(res.status===429){showToast("You've reached today's voice limit (10)");btnSend.disabled=false;btnSend.textContent='✓ Send';return;}
+      if(res.status===429){showToast("You've reached today's voice limit (50)");btnSend.disabled=false;btnSend.textContent='✓ Send';return;}
       if(res.status===413){showToast('Recording too long');btnSend.disabled=false;btnSend.textContent='✓ Send';return;}
       if(!res.ok){var t=await res.text();showToast(t||'Submit failed, try again');btnSend.disabled=false;btnSend.textContent='✓ Send';return;}
       var data=await res.json();
