@@ -198,36 +198,29 @@ button, input, textarea, select {
   letter-spacing: 0.2px;
 }
 .card .desc {
+  margin: auto 0 0;
+  padding: 44px 4px 36px;
+  position: relative;
+}
+.card .desc-text {
+  display: block;
   font-family: "Playfair Display", "Georgia", "Songti SC", serif;
   font-size: 17px;
   line-height: 1.7;
   color: var(--fg);
   white-space: pre-wrap;
-  margin: auto 0 0;
-  padding: 44px 4px 36px;
-  position: relative;
-  quotes: "\u201C" "\u201D";
 }
-.card .desc::before {
-  content: open-quote;
+.card .desc-q {
   position: absolute;
-  top: 0;
-  left: -6px;
   font-family: "Playfair Display", "Georgia", serif;
   font-size: 70px;
   line-height: 1;
   color: var(--line);
+  pointer-events: none;
+  user-select: none;
 }
-.card .desc::after {
-  content: close-quote;
-  position: absolute;
-  right: -2px;
-  bottom: -12px;
-  font-family: "Playfair Display", "Georgia", serif;
-  font-size: 70px;
-  line-height: 1;
-  color: var(--line);
-}
+.card .desc-q-open { top: 0; left: -6px; }
+.card .desc-q-close { right: -2px; bottom: -12px; }
 .card-footer {
   padding: 22px 32px 28px;
   border-top: 1px solid var(--line);
