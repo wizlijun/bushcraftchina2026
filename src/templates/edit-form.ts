@@ -8,8 +8,14 @@ function fmtDuration(ms: number): string {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
-function fmtKB(bytes: number): string {
-  return `${Math.round(bytes / 1024)} KB`;
+function fmtWhen(iso: string): string {
+  const d = new Date(iso);
+  const y = d.getUTCFullYear();
+  const mo = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const da = String(d.getUTCDate()).padStart(2, "0");
+  const h = String(d.getUTCHours()).padStart(2, "0");
+  const mi = String(d.getUTCMinutes()).padStart(2, "0");
+  return `${y}-${mo}-${da} ${h}:${mi}`;
 }
 
 function renderVoiceItems(cardId: string, voices: VoiceMessage[], key: string): string {
@@ -23,21 +29,13 @@ function renderVoiceItems(cardId: string, voices: VoiceMessage[], key: string): 
     `<div class="voice-list">` +
     sorted
       .map((v) => {
-        const where = [v.country, v.city].filter(Boolean).join(" / ");
-        const meta = [
-          new Date(v.created_at).toISOString().replace("T", " ").slice(0, 19) + " UTC",
-          where || "—",
-          fmtDuration(v.duration_ms),
-          fmtKB(v.size_bytes),
-          `ip ${escapeHtml(v.ip_hash)}`,
-        ].join(" · ");
+        const meta = [fmtWhen(v.created_at), v.country || "—", fmtDuration(v.duration_ms)].join(" · ");
         const audioSrc = `/voices/${encodeURIComponent(cardId)}/${encodeURIComponent(v.id)}.${encodeURIComponent(v.ext)}`;
         return `<div class="voice-item" data-voice="${escapeHtml(v.id)}">
           <div class="voice-item-meta">${meta}</div>
-          ${v.ua ? `<div class="voice-item-meta" style="opacity:0.7">${escapeHtml(v.ua)}</div>` : ""}
           <div class="voice-item-row">
             <audio controls preload="none" src="${audioSrc}"></audio>
-            <button type="button" class="ghost" onclick="deleteVoice(this,'${escapeHtml(cardId)}','${escapeHtml(v.id)}','${escapeHtml(key)}')">delete（删除）</button>
+            <button type="button" class="ghost" onclick="deleteVoice(this,'${escapeHtml(cardId)}','${escapeHtml(v.id)}','${escapeHtml(key)}')">delete</button>
           </div>
         </div>`;
       })

@@ -293,27 +293,26 @@ button, input, textarea, select {
 }
 .voice-trigger {
   position: absolute;
-  bottom: 24px;
-  right: 24px;
-  width: 44px; height: 44px;
+  top: 24px;
+  left: 24px;
+  width: 48px; height: 48px;
   border-radius: 50%;
   border: none;
-  background: rgba(245, 242, 235, 0.92);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  color: var(--fg);
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(74, 93, 58, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
+  z-index: 12;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  transition: transform 150ms, background 150ms;
+  transition: transform 150ms, box-shadow 150ms;
 }
-.voice-trigger:hover { background: #FDFAF2; }
+.voice-trigger:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(74, 93, 58, 0.45); }
 .voice-trigger.recording {
   background: #C7423B;
   color: #fff;
@@ -331,14 +330,15 @@ button, input, textarea, select {
   height: 18px;
   padding: 0 5px;
   border-radius: 9px;
-  background: var(--accent);
-  color: #fff;
+  background: #fff;
+  color: var(--accent);
   font-family: "Montserrat", sans-serif;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 18px;
   text-align: center;
   letter-spacing: 0;
+  border: 1.5px solid var(--accent);
 }
 .recording-overlay {
   position: fixed;
