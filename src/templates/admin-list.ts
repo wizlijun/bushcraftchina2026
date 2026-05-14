@@ -25,7 +25,7 @@ export function renderAdminList(
         </div>
         <div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">
           ${voicePill}
-          <button type="button" class="ghost" onclick="copyShareLink(this,'${escapeHtml(shareUrl)}')">copy edit link（复制工匠编辑链接）</button>
+          <button type="button" class="ghost" onclick="copyShareLink(this,'${escapeHtml(shareUrl)}')">Copy Link（复制给工匠）</button>
           <a class="ghost" href="/edit/${encodeURIComponent(e.id)}?key=${encodeURIComponent(adminKey)}">Admin Edit（管理员编辑）</a>
         </div>
       </li>`;
