@@ -686,6 +686,44 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   text-transform: uppercase;
   margin-top: 32px;
 }
+.edit-wrap .card-share {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 16px;
+  background: #faf8f3;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.edit-wrap .card-share canvas {
+  background: #fff;
+  padding: 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: block;
+}
+.edit-wrap .card-share-body {
+  flex: 1;
+  min-width: 0;
+}
+.edit-wrap .card-share-label {
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.edit-wrap .card-share-url {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  color: var(--fg);
+  word-break: break-all;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
 .edit-wrap .preview-img {
   width: 140px; height: 140px;
   object-fit: cover;

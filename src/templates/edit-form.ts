@@ -122,16 +122,58 @@ export function renderEditForm(
       <input type="text" name="address" placeholder="Hangzhou, China（城市，国家）" value="${card.address ?? ""}" />
     </div>
 
-    <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+    <div style="display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap">
       <button class="primary" type="submit" name="action" value="save">save（保存）</button>
-      <a class="ghost ghost-lg" href="/card/${encodeURIComponent(card.id)}" target="_blank">their page（专属卡片）</a>
+      <a class="ghost ghost-lg" href="/card/${encodeURIComponent(card.id)}" target="_blank" id="cardPageLink">Card（专属页面）</a>
+    </div>
+
+    <div class="card-share" id="cardShare" data-path="/card/${encodeURIComponent(card.id)}">
+      <canvas id="cardQr" width="120" height="120"></canvas>
+      <div class="card-share-body">
+        <div class="card-share-label">scan or share（扫码或分享）</div>
+        <div class="card-share-url" id="cardShareUrl">—</div>
+        <button type="button" class="ghost" id="cardShareCopy">copy URL（复制链接）</button>
+      </div>
     </div>
   </form>
 
   <h2>voice notes from visitors（访客语音留言）</h2>
   ${raw(renderVoiceItems(card.id, voices, key))}
 </div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
+(function(){
+  var share = document.getElementById('cardShare');
+  if(!share) return;
+  var path = share.getAttribute('data-path') || '/';
+  var url = window.location.origin + path;
+  var urlEl = document.getElementById('cardShareUrl');
+  var copyBtn = document.getElementById('cardShareCopy');
+  var pageLink = document.getElementById('cardPageLink');
+  if(urlEl) urlEl.textContent = url;
+  if(pageLink) pageLink.href = url;
+  if(window.QRCode){
+    QRCode.toCanvas(document.getElementById('cardQr'), url, {
+      width: 120, margin: 1,
+      color: { dark: '#2C2C2C', light: '#ffffff' }
+    });
+  }
+  if(copyBtn){
+    copyBtn.addEventListener('click', function(){
+      function done(){
+        var t = copyBtn.textContent;
+        copyBtn.textContent = 'copied 已复制';
+        copyBtn.disabled = true;
+        setTimeout(function(){ copyBtn.textContent = t; copyBtn.disabled = false; }, 1500);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).then(done, function(){ window.prompt('copy this URL（手动复制）', url); });
+      } else {
+        window.prompt('copy this URL（手动复制）', url);
+      }
+    });
+  }
+})();
 async function deleteVoice(btn, cardId, voiceId, key){
   if(!confirm('Delete this voice note?')) return;
   btn.disabled = true;
