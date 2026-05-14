@@ -205,8 +205,10 @@ button, input, textarea, select {
 .card .desc-text {
   display: block;
   font-family: "Playfair Display", "Georgia", "Songti SC", serif;
-  font-size: 17px;
-  line-height: 1.7;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.6;
   color: var(--fg);
   white-space: pre-wrap;
 }
