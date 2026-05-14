@@ -141,9 +141,9 @@ button, input, textarea, select {
   letter-spacing: 0.2px;
 }
 .card .desc {
-  font-family: "Merriweather", "Georgia", "Songti SC", serif;
-  font-size: 15px;
-  line-height: 1.75;
+  font-family: "Playfair Display", "Georgia", "Songti SC", serif;
+  font-size: 17px;
+  line-height: 1.7;
   color: var(--fg);
   white-space: pre-wrap;
   margin: auto 0 0;
