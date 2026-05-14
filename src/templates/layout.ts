@@ -4,77 +4,10 @@ import type { PageMeta } from "../utils/seo";
 import { escapeHtml } from "../utils/escape";
 
 const GLOBAL_CSS = `
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/playfair-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/playfair-600.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/playfair-i400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Merriweather';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/merri-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/lora-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Lora';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/lora-600.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Lora';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/lora-i400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/mont-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/mont-500.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/mont-600.woff2') format('woff2');
-}
 :root {
+  --font-serif-display: "Iowan Old Style", "Hoefler Text", "Charter", Georgia, "Noto Serif", "Songti SC", "Source Han Serif SC", serif;
+  --font-serif-body: Georgia, "Iowan Old Style", "Charter", "Noto Serif", "Times New Roman", "Songti SC", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Noto Sans", "Microsoft YaHei", sans-serif;
   --bg: #F5F2EB;
   --fg: #2C2C2C;
   --muted: #6B6358;
@@ -88,7 +21,7 @@ html, body {
   background-repeat: repeat;
   background-size: 512px 512px;
   color: var(--fg);
-  font-family: "Merriweather", "Iowan Old Style", "Palatino", "PingFang SC", "Songti SC", "Hiragino Sans GB", serif;
+  font-family: var(--font-serif-body);
   -webkit-font-smoothing: antialiased;
   letter-spacing: 0.01em;
 }
@@ -98,7 +31,7 @@ button, input, textarea, select {
   font: inherit; color: inherit;
 }
 .serif { font-family: inherit; }
-.sans { font-family: "Montserrat", -apple-system, "Helvetica Neue", Arial, "PingFang SC", sans-serif; }
+.sans { font-family: var(--font-sans); }
 .feed {
   height: 100vh;
   overflow-y: scroll;
@@ -158,10 +91,10 @@ button, input, textarea, select {
   flex-direction: column;
 }
 .card .brand {
-  font-family: "Playfair Display", "Cormorant Garamond", "Georgia", "Songti SC", serif;
+  font-family: var(--font-serif-display);
   font-size: 44px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
   line-height: 1.1;
   margin-bottom: 10px;
 }
@@ -176,7 +109,7 @@ button, input, textarea, select {
   color: var(--fg);
   height: 32px;
   border-radius: 999px;
-  font-family: "Montserrat", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 2.5px;
@@ -197,7 +130,7 @@ button, input, textarea, select {
 }
 .flip-trigger:hover, .flip-btn-back:hover { background: #FDFAF2; }
 .card .specialty {
-  font-family: "Montserrat", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   color: var(--muted);
   letter-spacing: 3px;
@@ -212,7 +145,7 @@ button, input, textarea, select {
   margin: 0 0 12px;
 }
 .card .owner {
-  font-family: "Playfair Display", "Georgia", "Songti SC", serif;
+  font-family: var(--font-serif-display);
   font-size: 16px;
   font-style: italic;
   color: var(--muted);
@@ -225,7 +158,7 @@ button, input, textarea, select {
 }
 .card .desc-text {
   display: block;
-  font-family: "Lora", "Songti SC", "PingFang SC", serif;
+  font-family: var(--font-serif-body);
   font-weight: 400;
   font-style: normal;
   font-size: 17px;
@@ -235,7 +168,7 @@ button, input, textarea, select {
 }
 .card .desc-q {
   position: absolute;
-  font-family: "Playfair Display", "Georgia", serif;
+  font-family: var(--font-serif-display);
   font-size: 70px;
   line-height: 1;
   color: var(--line);
@@ -261,7 +194,7 @@ button, input, textarea, select {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: "Montserrat", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 400;
   color: var(--fg);
@@ -270,7 +203,7 @@ button, input, textarea, select {
 }
 .bar-item svg { flex-shrink: 0; }
 .footer-text {
-  font-family: "Montserrat", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 400;
   color: var(--muted);
@@ -408,7 +341,7 @@ button, input, textarea, select {
   border-radius: 9px;
   background: #fff;
   color: var(--accent);
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 18px;
@@ -428,7 +361,7 @@ button, input, textarea, select {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -465,7 +398,7 @@ button, input, textarea, select {
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.82);
   color: #fff;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 2px;
@@ -502,7 +435,7 @@ button, input, textarea, select {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   transform: translateY(100%);
   transition: transform 250ms ease;
 }
@@ -526,7 +459,7 @@ button, input, textarea, select {
   flex: 1;
   border-radius: 8px;
   padding: 12px;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -573,7 +506,7 @@ button, input, textarea, select {
   color: #fff;
   padding: 10px 18px;
   border-radius: 999px;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   letter-spacing: 0.5px;
   z-index: 9200;
@@ -610,7 +543,7 @@ button, input, textarea, select {
 body:has(.edit-wrap) {
   background-image: none;
   background-color: #ffffff;
-  font-family: "Montserrat", -apple-system, "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+  font-family: var(--font-sans);
 }
 body:has(.edit-wrap) .swipe-hint { display: none; }
 .edit-wrap {
@@ -619,14 +552,14 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   padding: 32px 24px 64px;
 }
 .edit-wrap h1 {
-  font-family: "Playfair Display", "Georgia", serif;
+  font-family: var(--font-serif-display);
   font-size: 28px;
   font-weight: 600;
   letter-spacing: 0.3px;
   margin-bottom: 8px;
 }
 .edit-wrap h2 {
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -638,7 +571,7 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
 }
 .edit-wrap label {
   display: block;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.3px;
@@ -719,7 +652,7 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -737,7 +670,7 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   border: 1px solid var(--line);
   padding: 10px 16px;
   border-radius: 8px;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -794,7 +727,7 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   min-width: 0;
 }
 .edit-wrap .card-share-label {
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -804,7 +737,7 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
 }
 .edit-wrap .card-share-url {
   display: block;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   color: var(--accent);
   word-break: break-all;
@@ -845,7 +778,7 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   gap: 12px;
 }
 .admin-list li strong {
-  font-family: "Playfair Display", serif;
+  font-family: var(--font-serif-display);
   font-size: 17px;
   font-weight: 600;
 }
@@ -866,7 +799,7 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   border: 1px solid var(--line);
   background: #fff;
   color: var(--muted);
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.3px;
@@ -930,9 +863,6 @@ export function layout(
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>${m.title}</title>
 ${raw(renderMeta(m))}
-<link rel="preload" href="/fonts/playfair-600.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="/fonts/lora-400.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="/fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin />
 <style>${raw(GLOBAL_CSS)}</style>
 </head>
 <body>
