@@ -35,32 +35,62 @@ export function mountApi(app: Hono<AppEnv>): void {
   app.post("/api/cards", requireAuth, requireAdmin, async (c) => {
     const body = (await c.req.json()) as Partial<Card> & { id?: string };
     const id = (body.id ?? "").trim();
-    const brand = (body.brand ?? "").trim();
     if (!/^[a-z0-9-]+$/.test(id)) return c.text("the id isn’t quite right — lowercase letters, numbers or hyphens only", 400);
+    const existing = await getCard(c.env.BUCKET, id);
+    const brand = (body.brand ?? existing?.brand ?? "").trim();
     if (!brand) return c.text("please give the workshop a name", 400);
-    if (await getCard(c.env.BUCKET, id)) return c.text("that id is already taken", 400);
+    const base: Card = existing ?? emptyCard(id, brand);
     const card: Card = {
-      ...emptyCard(id, brand),
+      ...base,
       ...body,
       id,
       brand,
+      contact: { ...base.contact, ...(body.contact ?? {}) },
+      socials: { ...base.socials, ...(body.socials ?? {}) },
     };
     await putCard(c.env.BUCKET, card);
     const idx = await listIndex(c.env.BUCKET);
-    await upsertIndexEntry(c.env.BUCKET, { id, brand, order: idx.length + 1 });
+    const indexEntry = idx.find((e) => e.id === id);
+    await upsertIndexEntry(c.env.BUCKET, {
+      id,
+      brand,
+      order: indexEntry?.order ?? idx.length + 1,
+    });
     const keys = await loadKeys(c.env.BUCKET);
-    const newKey = generateKey();
-    keys.cards[id] = newKey;
-    await saveKeys(c.env.BUCKET, keys);
+    let cardKey = keys.cards[id];
+    if (!cardKey) {
+      cardKey = generateKey();
+      keys.cards[id] = cardKey;
+      await saveKeys(c.env.BUCKET, keys);
+    }
+    const origin = new URL(c.req.url).origin;
+    return c.json({
+      ok: true,
+      created: !existing,
+      id,
+      brand,
+      key: cardKey,
+      edit_url: `${origin}/edit/${encodeURIComponent(id)}?key=${encodeURIComponent(cardKey)}`,
+      card_url: `${origin}/card/${encodeURIComponent(id)}`,
+      card,
+    });
+  });
+
+  app.get("/api/card/:id/edit-link", requireAuth, requireAdmin, async (c) => {
+    const id = c.req.param("id");
+    const card = await getCard(c.env.BUCKET, id);
+    if (!card) return c.text("we couldn’t find that maker", 404);
+    const keys = await loadKeys(c.env.BUCKET);
+    const cardKey = keys.cards[id];
+    if (!cardKey) return c.text("no key issued for this maker", 404);
     const origin = new URL(c.req.url).origin;
     return c.json({
       ok: true,
       id,
-      brand,
-      key: newKey,
-      edit_url: `${origin}/edit/${encodeURIComponent(id)}?key=${encodeURIComponent(newKey)}`,
+      brand: card.brand,
+      key: cardKey,
+      edit_url: `${origin}/edit/${encodeURIComponent(id)}?key=${encodeURIComponent(cardKey)}`,
       card_url: `${origin}/card/${encodeURIComponent(id)}`,
-      card,
     });
   });
 

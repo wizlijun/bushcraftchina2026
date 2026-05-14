@@ -28,9 +28,9 @@ export function renderAdminList(
 
   return html`<div class="edit-wrap">
   <h1>the steward’s desk（管理后台）</h1>
-  <p class="meta" style="font-size:12px;color:var(--muted)">${index.length} maker${index.length === 1 ? "" : "s"} gathered so far（已收录的工匠数）</p>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:8px">${index.length} maker${index.length === 1 ? "" : "s"} gathered so far（已收录的工匠数）</p>
 
-  <h2 style="font-size:15px;margin-top:24px">welcome a new maker（新增工匠）</h2>
+  <h2>welcome a new maker（新增工匠）</h2>
   <form method="post" action="/edit/_new?key=${encodeURIComponent(adminKey)}">
     <label>id（仅小写字母、数字或连字符）</label>
     <input type="text" name="new_id" pattern="[a-z0-9-]+" required />
@@ -39,10 +39,10 @@ export function renderAdminList(
     <button class="primary" type="submit">add them in（添加）</button>
   </form>
 
-  <h2 style="font-size:15px;margin-top:24px">the gathering（工匠列表）</h2>
+  <h2>the gathering（工匠列表）</h2>
   <ul class="admin-list">${raw(rows)}</ul>
 
-  <h2 style="font-size:15px;margin-top:24px">tread carefully（危险操作）</h2>
+  <h2>tread carefully（危险操作）</h2>
   <form method="post" action="/edit/_admin?key=${encodeURIComponent(adminKey)}" onsubmit="return confirm('are you certain?（确定吗？）')">
     <label>see a maker out（按 id 删除工匠）</label>
     <div class="row">
