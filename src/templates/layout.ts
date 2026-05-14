@@ -131,6 +131,36 @@ button, input, textarea, select {
   transform: rotateY(180deg);
   padding: 0;
 }
+@media (min-aspect-ratio: 9/8) {
+  .card-flip {
+    aspect-ratio: 9 / 8;
+    width: min(100%, calc(100vh * 9 / 8));
+    perspective: none;
+    transform-style: flat;
+    transition: none;
+    display: flex;
+    flex-direction: row;
+    transform: none !important;
+  }
+  .card-front, .card-back {
+    position: relative;
+    inset: auto;
+    width: 50%;
+    height: 100%;
+    transform: none !important;
+    -webkit-transform: none !important;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    transform-style: flat;
+    -webkit-transform-style: flat;
+  }
+  .card-front { cursor: default; }
+  .flip-trigger,
+  .flip-btn-back { display: none !important; }
+  .card-back .voice-trigger,
+  .card-back .voice-tooltip,
+  .card-back .voice-status { display: none !important; }
+}
 .card-header {
   padding: 28px 32px 8px;
   flex-shrink: 0;
@@ -950,7 +980,7 @@ ${body}
 <div class="voice-toast" id="voiceToast"></div>
 <script>
 function openLightbox(src){var d=document.createElement('div');d.className='lightbox';d.onclick=function(){d.remove()};var i=document.createElement('img');i.src=src;d.appendChild(i);document.body.appendChild(d)}
-function flipFront(ev,el){if(ev.target.closest('a,button'))return;el.closest('.card-flip').classList.toggle('flipped')}
+function flipFront(ev,el){if(ev.target.closest('a,button'))return;if(window.matchMedia&&window.matchMedia('(min-aspect-ratio: 9/8)').matches)return;el.closest('.card-flip').classList.toggle('flipped')}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=document.querySelector('.lightbox');if(lb)lb.remove()}});
 (function(){
   var feed=document.querySelector('.feed');
