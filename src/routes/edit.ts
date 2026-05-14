@@ -53,7 +53,14 @@ export function mountEdit(app: Hono<AppEnv>): void {
     if (auth.role === "admin") {
       const idx = await listIndex(c.env.BUCKET);
       const keys = await loadKeys(c.env.BUCKET);
-      return c.html(layout({ title: "the steward’s desk", noindex: true }, await renderAdminList(idx, keys, key)));
+      const counts: Record<string, number> = {};
+      await Promise.all(
+        idx.map(async (e) => {
+          const card = await getCard(c.env.BUCKET, e.id);
+          counts[e.id] = card?.voice_count ?? 0;
+        })
+      );
+      return c.html(layout({ title: "the steward’s desk", noindex: true }, await renderAdminList(idx, keys, key, counts)));
     }
     const card = await getCard(c.env.BUCKET, auth.cardId!);
     if (!card) return c.text("we couldn’t find that maker", 404);

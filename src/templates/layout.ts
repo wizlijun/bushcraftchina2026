@@ -765,6 +765,28 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   margin-top: 4px;
   word-break: break-all;
 }
+.voice-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.voice-pill-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
 `;
 
 function renderMeta(meta: PageMeta): string {

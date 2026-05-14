@@ -6,19 +6,25 @@ import { escapeHtml } from "../utils/escape";
 export function renderAdminList(
   index: CardIndexEntry[],
   keys: Keys,
-  adminKey: string
+  adminKey: string,
+  voiceCounts: Record<string, number> = {}
 ): HtmlEscapedString | Promise<HtmlEscapedString> {
   const sorted = [...index].sort((a, b) => a.order - b.order);
   const rows = sorted
     .map((e) => {
       const cardKey = keys.cards[e.id] ?? "";
       const shareUrl = `/edit/${encodeURIComponent(e.id)}?key=${encodeURIComponent(cardKey)}`;
+      const vc = voiceCounts[e.id] ?? 0;
+      const voicePill = vc > 0
+        ? `<span class="voice-pill voice-pill-on">🎤 ${vc}</span>`
+        : `<span class="voice-pill">🎤 0</span>`;
       return `<li>
         <div>
           <strong>${escapeHtml(e.brand)}</strong>
           <div class="meta">id · ${escapeHtml(e.id)} &nbsp;·&nbsp; key · ${escapeHtml(cardKey)}</div>
         </div>
         <div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          ${voicePill}
           <button type="button" class="ghost" onclick="copyShareLink(this,'${escapeHtml(shareUrl)}')">copy edit link（复制工匠编辑链接）</button>
           <a class="ghost" href="/edit/${encodeURIComponent(e.id)}?key=${encodeURIComponent(adminKey)}">Admin Edit（管理员编辑）</a>
         </div>
