@@ -140,8 +140,9 @@ button, input, textarea, select {
   color: var(--muted);
   letter-spacing: 0.2px;
 }
+.card blockquote.desc,
 .card .desc {
-  font-family: "Playfair Display", "Georgia", "Songti SC", serif;
+  font-family: "Playfair Display", "Georgia", "Songti SC", serif !important;
   font-size: 17px;
   line-height: 1.7;
   color: var(--fg);

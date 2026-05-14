@@ -52,7 +52,7 @@ export function mountPages(app: Hono<AppEnv>): void {
     const meta = cardMeta(card, o, { published });
     const cardHtml = await renderCard(card, { asDetail: true });
     const body = html`<main class="feed">${cardHtml}</main>`;
-    return c.html(layout(meta, await body));
+    return c.html(layout(meta, await body), 200, { "cache-control": "no-store" });
   });
 
   app.get("/sitemap.xml", async (c) => {
