@@ -33,6 +33,27 @@ const GLOBAL_CSS = `
   src: url('/fonts/merri-400.woff2') format('woff2');
 }
 @font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lora-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/lora-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/lora-i400.woff2') format('woff2');
+}
+@font-face {
   font-family: 'Montserrat';
   font-style: normal;
   font-weight: 400;
@@ -204,11 +225,11 @@ button, input, textarea, select {
 }
 .card .desc-text {
   display: block;
-  font-family: "Playfair Display", "Georgia", "Songti SC", serif;
+  font-family: "Lora", "Songti SC", "PingFang SC", serif;
   font-weight: 400;
-  font-style: italic;
-  font-size: 18px;
-  line-height: 1.6;
+  font-style: normal;
+  font-size: 17px;
+  line-height: 1.7;
   color: var(--fg);
   white-space: pre-wrap;
 }
@@ -909,8 +930,8 @@ export function layout(
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>${m.title}</title>
 ${raw(renderMeta(m))}
-<link rel="preload" href="/fonts/playfair-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/playfair-600.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/lora-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/mont-400.woff2" as="font" type="font/woff2" crossorigin />
 <style>${raw(GLOBAL_CSS)}</style>
 </head>
