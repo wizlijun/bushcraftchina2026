@@ -994,8 +994,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
   var MIN_MS=5000, MAX_MS=120000, HOLD_MS=250;
   var triggers=document.querySelectorAll('.voice-trigger');
   if(!triggers.length) return;
-  var supported=typeof MediaRecorder!=='undefined' && !!navigator.mediaDevices && !!navigator.mediaDevices.getUserMedia;
-  if(!supported){triggers.forEach(function(b){b.style.display='none'});return;}
+  function recorderSupported(){
+    return typeof MediaRecorder!=='undefined' && !!navigator.mediaDevices && !!navigator.mediaDevices.getUserMedia;
+  }
   function inlineFor(btn){
     var parent=btn.parentElement;
     if(!parent) return {tip:null,status:null,time:null};
@@ -1042,6 +1043,11 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
     setTimeout(function(){sheet.hidden=true;if(sheetAudio.src){URL.revokeObjectURL(sheetAudio.src);sheetAudio.removeAttribute('src');sheetAudio.load();}},250);
   }
   async function startRecording(){
+    if(!recorderSupported()){
+      showToast('Recording not supported in this browser. Please open in Safari or Chrome.');
+      reset(true);
+      return;
+    }
     try{
       state.stream=await navigator.mediaDevices.getUserMedia({audio:true});
     }catch(err){
