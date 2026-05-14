@@ -5,6 +5,14 @@ import { layout } from "../templates/layout";
 import { renderCard } from "../templates/card";
 import { getCard, loadAllCards } from "../utils/cards";
 import { getImage } from "../utils/r2";
+import {
+  origin,
+  homeMeta,
+  cardMeta,
+  isPublished,
+  buildSitemap,
+  buildRobots,
+} from "../utils/seo";
 
 function shuffled<T>(items: T[]): T[] {
   const a = [...items];
@@ -19,26 +27,53 @@ function shuffled<T>(items: T[]): T[] {
 
 export function mountPages(app: Hono<AppEnv>): void {
   app.get("/", async (c) => {
+    const o = origin(c.req.url);
+    const meta = homeMeta(o);
     const cards: Card[] = await loadAllCards(c.env.BUCKET);
-    if (cards.length === 0) {
+    const published = cards.filter(isPublished);
+    if (published.length === 0) {
       const empty = html`<div class="empty">no makers gathered yet · the fire is only just lit</div>`;
-      return c.html(layout("Bushcraft China Community · A Show of Crafters & Their Works", await empty));
+      return c.html(layout(meta, await empty));
     }
-    const ordered = shuffled(cards);
+    const ordered = shuffled(published);
     const rendered = await Promise.all(
       ordered.map(async (card) => (await renderCard(card)).toString())
     );
     const body = html`<main class="feed">${raw(rendered.join(""))}</main>`;
     const headers = { "cache-control": "no-store" };
-    return c.html(layout("Bushcraft China Community · A Show of Crafters & Their Works", await body), 200, headers);
+    return c.html(layout(meta, await body), 200, headers);
   });
 
   app.get("/card/:id", async (c) => {
     const card = await getCard(c.env.BUCKET, c.req.param("id"));
     if (!card) return c.text("we couldn’t find that maker", 404);
-    const cardHtml = await renderCard(card);
+    const o = origin(c.req.url);
+    const published = isPublished(card);
+    const meta = cardMeta(card, o, { published });
+    const cardHtml = await renderCard(card, { asDetail: true });
     const body = html`<main class="feed">${cardHtml}</main>`;
-    return c.html(layout(`${card.brand} · Bushcraft China Community`, await body));
+    return c.html(layout(meta, await body));
+  });
+
+  app.get("/sitemap.xml", async (c) => {
+    const cards = await loadAllCards(c.env.BUCKET);
+    const xml = buildSitemap(origin(c.req.url), cards);
+    return new Response(xml, {
+      headers: {
+        "content-type": "application/xml; charset=utf-8",
+        "cache-control": "public, max-age=600",
+      },
+    });
+  });
+
+  app.get("/robots.txt", (c) => {
+    const body = buildRobots(origin(c.req.url));
+    return new Response(body, {
+      headers: {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": "public, max-age=3600",
+      },
+    });
   });
 
   app.get("/images/:id/:filename{.+}", async (c) => {

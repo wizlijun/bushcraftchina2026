@@ -1,12 +1,56 @@
 import { html, raw } from "hono/html";
 import type { HtmlEscapedString } from "hono/utils/html";
-import type { Card } from "../types";
+import type { Card, VoiceMessage } from "../types";
 import { escapeHtml } from "../utils/escape";
+
+function fmtDuration(ms: number): string {
+  const s = Math.round(ms / 1000);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+function fmtKB(bytes: number): string {
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
+function renderVoiceItems(cardId: string, voices: VoiceMessage[], key: string): string {
+  if (!voices.length) {
+    return `<div class="voice-item-empty">no voice notes yet（暂无语音留言）</div>`;
+  }
+  const sorted = [...voices].sort((a, b) =>
+    a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0
+  );
+  return (
+    `<div class="voice-list">` +
+    sorted
+      .map((v) => {
+        const where = [v.country, v.city].filter(Boolean).join(" / ");
+        const meta = [
+          new Date(v.created_at).toISOString().replace("T", " ").slice(0, 19) + " UTC",
+          where || "—",
+          fmtDuration(v.duration_ms),
+          fmtKB(v.size_bytes),
+          `ip ${escapeHtml(v.ip_hash)}`,
+        ].join(" · ");
+        const audioSrc = `/voices/${encodeURIComponent(cardId)}/${encodeURIComponent(v.id)}.${encodeURIComponent(v.ext)}`;
+        return `<div class="voice-item" data-voice="${escapeHtml(v.id)}">
+          <div class="voice-item-meta">${meta}</div>
+          ${v.ua ? `<div class="voice-item-meta" style="opacity:0.7">${escapeHtml(v.ua)}</div>` : ""}
+          <div class="voice-item-row">
+            <audio controls preload="none" src="${audioSrc}"></audio>
+            <button type="button" class="ghost" onclick="deleteVoice(this,'${escapeHtml(cardId)}','${escapeHtml(v.id)}','${escapeHtml(key)}')">delete（删除）</button>
+          </div>
+        </div>`;
+      })
+      .join("") +
+    `</div>`
+  );
+}
 
 export function renderEditForm(
   card: Card,
   key: string,
-  isAdmin: boolean
+  isAdmin: boolean,
+  voices: VoiceMessage[] = []
 ): HtmlEscapedString | Promise<HtmlEscapedString> {
   const productSlots = [0, 1, 2]
     .map((i) => {
@@ -85,5 +129,30 @@ export function renderEditForm(
       <a class="ghost" href="/card/${encodeURIComponent(card.id)}" target="_blank">preview（预览）</a>
     </div>
   </form>
-</div>`;
+
+  <h2>voice notes from visitors（访客语音留言）</h2>
+  ${raw(renderVoiceItems(card.id, voices, key))}
+</div>
+<script>
+async function deleteVoice(btn, cardId, voiceId, key){
+  if(!confirm('Delete this voice note?')) return;
+  btn.disabled = true;
+  try{
+    var res = await fetch('/api/voice/'+encodeURIComponent(cardId)+'/'+encodeURIComponent(voiceId)+'?key='+encodeURIComponent(key), { method: 'DELETE' });
+    if(!res.ok){ alert('Delete failed ('+res.status+')'); btn.disabled = false; return; }
+    var item = btn.closest('.voice-item');
+    if(item) item.remove();
+    var list = document.querySelector('.voice-list');
+    if(list && !list.querySelector('.voice-item')){
+      var empty = document.createElement('div');
+      empty.className = 'voice-item-empty';
+      empty.textContent = 'no voice notes yet（暂无语音留言）';
+      list.parentNode.replaceChild(empty, list);
+    }
+  }catch(err){
+    alert('Network error');
+    btn.disabled = false;
+  }
+}
+</script>`;
 }

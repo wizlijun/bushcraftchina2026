@@ -17,6 +17,24 @@ export interface Card {
   };
   products: string[];
   links: Array<{ label: string; url: string }>;
+  voice_count?: number;
+}
+
+export interface VoiceMessage {
+  id: string;
+  ext: string;
+  duration_ms: number;
+  size_bytes: number;
+  content_type: string;
+  ip_hash: string;
+  country?: string;
+  city?: string;
+  ua?: string;
+  created_at: string;
+}
+
+export interface VoiceIndex {
+  items: VoiceMessage[];
 }
 
 export interface CardIndexEntry {
@@ -32,6 +50,7 @@ export interface Keys {
 
 export interface Env {
   BUCKET: R2Bucket;
+  ADMIN_SALT?: string;
 }
 
 export type Role = "admin" | "card";

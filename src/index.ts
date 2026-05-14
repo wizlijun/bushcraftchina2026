@@ -3,6 +3,7 @@ import type { AppEnv } from "./types";
 import { mountPages } from "./routes/pages";
 import { mountEdit } from "./routes/edit";
 import { mountApi } from "./routes/api";
+import { mountVoices } from "./routes/voices";
 
 const app = new Hono<AppEnv>();
 
@@ -16,5 +17,6 @@ app.notFound((c) => c.text("lost in the woods — that path leads nowhere", 404)
 mountPages(app);
 mountEdit(app);
 mountApi(app);
+mountVoices(app);
 
 export default app;

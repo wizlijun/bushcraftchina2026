@@ -52,11 +52,11 @@ export function mountEdit(app: Hono<AppEnv>): void {
     if (auth.role === "admin") {
       const idx = await listIndex(c.env.BUCKET);
       const keys = await loadKeys(c.env.BUCKET);
-      return c.html(layout("the steward’s desk", await renderAdminList(idx, keys, key)));
+      return c.html(layout({ title: "the steward’s desk", noindex: true }, await renderAdminList(idx, keys, key)));
     }
     const card = await getCard(c.env.BUCKET, auth.cardId!);
     if (!card) return c.text("we couldn’t find that maker", 404);
-    return c.html(layout(`tending to · ${card.brand}`, await renderEditForm(card, key, false)));
+    return c.html(layout({ title: `tending to · ${card.brand}`, noindex: true }, await renderEditForm(card, key, false)));
   });
 
   app.get("/edit/:id", requireAuth, async (c) => {
@@ -67,7 +67,7 @@ export function mountEdit(app: Hono<AppEnv>): void {
     let card = await getCard(c.env.BUCKET, id);
     if (!card) card = emptyCard(id, "");
     return c.html(
-      layout(`tending to · ${card.brand || id}`, await renderEditForm(card, key, auth.role === "admin"))
+      layout({ title: `tending to · ${card.brand || id}`, noindex: true }, await renderEditForm(card, key, auth.role === "admin"))
     );
   });
 

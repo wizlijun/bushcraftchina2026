@@ -1,5 +1,7 @@
 import { html, raw } from "hono/html";
 import type { HtmlEscapedString } from "hono/utils/html";
+import type { PageMeta } from "../utils/seo";
+import { escapeHtml } from "../utils/escape";
 
 const GLOBAL_CSS = `
 :root {
@@ -289,6 +291,198 @@ button, input, textarea, select {
   height: 100vh; display: flex; align-items: center; justify-content: center;
   color: var(--muted);
 }
+.voice-trigger {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(245, 242, 235, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transition: transform 150ms, background 150ms;
+}
+.voice-trigger:hover { background: #FDFAF2; }
+.voice-trigger.recording {
+  background: #C7423B;
+  color: #fff;
+  animation: voicePulse 1s ease-in-out infinite;
+}
+@keyframes voicePulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(199,66,59,0.45); }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 12px rgba(199,66,59,0); }
+}
+.voice-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+  letter-spacing: 0;
+}
+.recording-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  pointer-events: none;
+}
+.recording-overlay[hidden] { display: none; }
+.rec-circle {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: #C7423B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  animation: voicePulse 1.1s ease-in-out infinite;
+}
+.rec-hint {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.voice-sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 9100;
+  background: rgba(253, 250, 242, 0.98);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+  padding: 22px 22px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: "Montserrat", sans-serif;
+  transform: translateY(100%);
+  transition: transform 250ms ease;
+}
+.voice-sheet[hidden] { display: none; }
+.voice-sheet.open { transform: translateY(0); }
+.voice-sheet-header {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.voice-sheet audio {
+  width: 100%;
+}
+.voice-sheet-actions {
+  display: flex;
+  gap: 10px;
+}
+.voice-sheet-actions button {
+  flex: 1;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--fg);
+}
+.voice-sheet-actions button.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.voice-sheet-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.voice-sheet-close {
+  align-self: center;
+  background: none;
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 12px;
+}
+.voice-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  z-index: 9200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms;
+}
+.voice-toast.show { opacity: 1; }
+.voice-list { display: flex; flex-direction: column; gap: 14px; }
+.voice-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #faf8f3;
+}
+.voice-item-meta {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+.voice-item-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.voice-item-row audio { flex: 1; min-width: 0; }
+.voice-item-empty {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+}
 body:has(.edit-wrap) {
   background-image: none;
   background-color: #ffffff;
@@ -470,16 +664,56 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
 }
 `;
 
+function renderMeta(meta: PageMeta): string {
+  const out: string[] = [];
+  if (meta.description) {
+    out.push(`<meta name="description" content="${escapeHtml(meta.description)}" />`);
+  }
+  if (meta.canonical) {
+    out.push(`<link rel="canonical" href="${escapeHtml(meta.canonical)}" />`);
+  }
+  if (meta.noindex) {
+    out.push(`<meta name="robots" content="noindex,nofollow" />`);
+  }
+  out.push(`<meta property="og:site_name" content="Bushcraft China Community" />`);
+  out.push(`<meta property="og:type" content="${escapeHtml(meta.type ?? "website")}" />`);
+  out.push(`<meta property="og:title" content="${escapeHtml(meta.title)}" />`);
+  if (meta.description) {
+    out.push(`<meta property="og:description" content="${escapeHtml(meta.description)}" />`);
+  }
+  if (meta.canonical) {
+    out.push(`<meta property="og:url" content="${escapeHtml(meta.canonical)}" />`);
+  }
+  if (meta.image) {
+    out.push(`<meta property="og:image" content="${escapeHtml(meta.image)}" />`);
+    out.push(`<meta name="twitter:card" content="summary_large_image" />`);
+    out.push(`<meta name="twitter:image" content="${escapeHtml(meta.image)}" />`);
+  } else {
+    out.push(`<meta name="twitter:card" content="summary" />`);
+  }
+  out.push(`<meta name="twitter:title" content="${escapeHtml(meta.title)}" />`);
+  if (meta.description) {
+    out.push(`<meta name="twitter:description" content="${escapeHtml(meta.description)}" />`);
+  }
+  if (meta.jsonLd) {
+    const json = JSON.stringify(meta.jsonLd).replace(/</g, "\\u003c");
+    out.push(`<script type="application/ld+json">${json}</script>`);
+  }
+  return out.join("\n");
+}
+
 export function layout(
-  title: string,
+  meta: PageMeta | string,
   body: HtmlEscapedString | string
 ): HtmlEscapedString | Promise<HtmlEscapedString> {
+  const m: PageMeta = typeof meta === "string" ? { title: meta } : meta;
   return html`<!doctype html>
 <html lang="en-GB">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>${title}</title>
+<title>${m.title}</title>
+${raw(renderMeta(m))}
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
@@ -494,6 +728,20 @@ ${body}
   </div>
   <span class="swipe-hint-label">Scroll</span>
 </div>
+<div class="recording-overlay" id="recOverlay" hidden>
+  <div class="rec-circle"><span id="recTime">0:00</span></div>
+  <div class="rec-hint">Recording · release to stop</div>
+</div>
+<div class="voice-sheet" id="voiceSheet" hidden>
+  <div class="voice-sheet-header"><span id="voiceSheetTitle">Your voice note · 0:00</span></div>
+  <audio id="voiceSheetAudio" controls preload="metadata"></audio>
+  <div class="voice-sheet-actions">
+    <button type="button" id="voiceRedo">↻ Re-record</button>
+    <button type="button" class="primary" id="voiceSend">✓ Send</button>
+  </div>
+  <button type="button" class="voice-sheet-close" id="voiceCancel">cancel</button>
+</div>
+<div class="voice-toast" id="voiceToast"></div>
 <script>
 function openLightbox(src){var d=document.createElement('div');d.className='lightbox';d.onclick=function(){d.remove()};var i=document.createElement('img');i.src=src;d.appendChild(i);document.body.appendChild(d)}
 function flipFront(ev,el){if(ev.target.closest('a,button'))return;el.closest('.card-flip').classList.toggle('flipped')}
@@ -505,6 +753,160 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=docu
   function dismiss(){h.classList.add('gone');setTimeout(function(){h.remove()},800);}
   feed.addEventListener('scroll',dismiss,{once:true});
   setTimeout(dismiss,4000);
+})();
+(function(){
+  var MIN_MS=5000, MAX_MS=120000, HOLD_MS=250;
+  var triggers=document.querySelectorAll('.voice-trigger');
+  if(!triggers.length) return;
+  var supported=typeof MediaRecorder!=='undefined' && !!navigator.mediaDevices && !!navigator.mediaDevices.getUserMedia;
+  if(!supported){triggers.forEach(function(b){b.style.display='none'});return;}
+  var overlay=document.getElementById('recOverlay');
+  var recTime=document.getElementById('recTime');
+  var sheet=document.getElementById('voiceSheet');
+  var sheetAudio=document.getElementById('voiceSheetAudio');
+  var sheetTitle=document.getElementById('voiceSheetTitle');
+  var btnRedo=document.getElementById('voiceRedo');
+  var btnSend=document.getElementById('voiceSend');
+  var btnCancel=document.getElementById('voiceCancel');
+  var toast=document.getElementById('voiceToast');
+  var state={cardId:null,btn:null,stream:null,rec:null,chunks:[],startTs:0,durationMs:0,blob:null,mime:'',holdTimer:null,maxTimer:null,tickTimer:null,armed:false};
+  function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show')},2200);}
+  function fmt(ms){var s=Math.floor(ms/1000);var m=Math.floor(s/60);return m+':'+String(s%60).padStart(2,'0');}
+  function pickMime(){var c=['audio/webm;codecs=opus','audio/mp4;codecs=mp4a.40.2','audio/ogg;codecs=opus','audio/webm','audio/mp4'];for(var i=0;i<c.length;i++){if(MediaRecorder.isTypeSupported(c[i]))return c[i];}return '';}
+  function stopStream(){if(state.stream){state.stream.getTracks().forEach(function(t){t.stop()});state.stream=null;}}
+  function reset(full){
+    if(state.btn){state.btn.classList.remove('recording');}
+    overlay.hidden=true;
+    if(state.holdTimer){clearTimeout(state.holdTimer);state.holdTimer=null;}
+    if(state.maxTimer){clearTimeout(state.maxTimer);state.maxTimer=null;}
+    if(state.tickTimer){clearInterval(state.tickTimer);state.tickTimer=null;}
+    state.armed=false;
+    if(full){state.cardId=null;state.btn=null;state.chunks=[];state.blob=null;state.mime='';state.durationMs=0;stopStream();}
+  }
+  function openSheet(){
+    sheet.hidden=false;
+    requestAnimationFrame(function(){sheet.classList.add('open');});
+    var url=URL.createObjectURL(state.blob);
+    sheetAudio.src=url;
+    sheetTitle.textContent='Your voice note · '+fmt(state.durationMs);
+    btnSend.disabled=false;
+  }
+  function closeSheet(){
+    sheet.classList.remove('open');
+    setTimeout(function(){sheet.hidden=true;if(sheetAudio.src){URL.revokeObjectURL(sheetAudio.src);sheetAudio.removeAttribute('src');sheetAudio.load();}},250);
+  }
+  async function startRecording(){
+    try{
+      state.stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    }catch(err){
+      showToast('Microphone access denied');
+      reset(true);
+      return;
+    }
+    var mime=pickMime();
+    state.mime=mime;
+    try{
+      state.rec=mime?new MediaRecorder(state.stream,{mimeType:mime,audioBitsPerSecond:32000}):new MediaRecorder(state.stream);
+    }catch(err){
+      showToast('Recording not supported on this device');
+      reset(true);
+      return;
+    }
+    state.chunks=[];
+    state.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)state.chunks.push(e.data);};
+    state.rec.onstop=function(){
+      var actualMime=state.mime||(state.chunks[0]?state.chunks[0].type:'audio/webm');
+      state.blob=new Blob(state.chunks,{type:actualMime});
+      stopStream();
+      overlay.hidden=true;
+      if(state.btn)state.btn.classList.remove('recording');
+      if(state.tickTimer){clearInterval(state.tickTimer);state.tickTimer=null;}
+      if(state.durationMs<MIN_MS){
+        showToast('At least 5 seconds, please');
+        reset(true);
+        return;
+      }
+      openSheet();
+    };
+    state.startTs=Date.now();
+    state.rec.start();
+    if(state.btn)state.btn.classList.add('recording');
+    overlay.hidden=false;
+    recTime.textContent='0:00';
+    state.tickTimer=setInterval(function(){
+      state.durationMs=Date.now()-state.startTs;
+      recTime.textContent=fmt(state.durationMs);
+    },200);
+    state.maxTimer=setTimeout(function(){stopRecording();},MAX_MS);
+  }
+  function stopRecording(){
+    if(!state.rec||state.rec.state==='inactive')return;
+    state.durationMs=Date.now()-state.startTs;
+    try{state.rec.stop();}catch(e){}
+    if(state.maxTimer){clearTimeout(state.maxTimer);state.maxTimer=null;}
+  }
+  function onPointerDown(e){
+    var btn=e.currentTarget;
+    if(state.armed||state.rec)return;
+    state.btn=btn;
+    state.cardId=btn.getAttribute('data-card');
+    state.armed=true;
+    e.preventDefault();
+    state.holdTimer=setTimeout(function(){
+      state.holdTimer=null;
+      startRecording();
+    },HOLD_MS);
+  }
+  function onPointerUp(){
+    if(state.holdTimer){clearTimeout(state.holdTimer);state.holdTimer=null;state.armed=false;state.btn=null;return;}
+    if(state.rec&&state.rec.state==='recording'){stopRecording();}
+  }
+  triggers.forEach(function(b){
+    b.addEventListener('pointerdown',onPointerDown);
+    b.addEventListener('pointerup',onPointerUp);
+    b.addEventListener('pointercancel',onPointerUp);
+    b.addEventListener('pointerleave',function(){if(state.rec&&state.rec.state==='recording')stopRecording();else onPointerUp();});
+    b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();});
+  });
+  btnRedo.addEventListener('click',function(){
+    closeSheet();
+    state.blob=null;state.chunks=[];state.durationMs=0;
+    setTimeout(startRecording,300);
+  });
+  btnCancel.addEventListener('click',function(){
+    closeSheet();
+    reset(true);
+  });
+  btnSend.addEventListener('click',async function(){
+    if(!state.blob||!state.cardId)return;
+    btnSend.disabled=true;
+    btnSend.textContent='sending…';
+    var ext=(state.mime.indexOf('mp4')>=0)?'mp4':(state.mime.indexOf('ogg')>=0?'ogg':'webm');
+    var fd=new FormData();
+    fd.append('audio',state.blob,'voice.'+ext);
+    fd.append('duration_ms',String(Math.min(state.durationMs,MAX_MS)));
+    try{
+      var res=await fetch('/api/voice/'+encodeURIComponent(state.cardId),{method:'POST',body:fd});
+      if(res.status===429){showToast("You've reached today's voice limit (10)");btnSend.disabled=false;btnSend.textContent='✓ Send';return;}
+      if(res.status===413){showToast('Recording too long');btnSend.disabled=false;btnSend.textContent='✓ Send';return;}
+      if(!res.ok){var t=await res.text();showToast(t||'Submit failed, try again');btnSend.disabled=false;btnSend.textContent='✓ Send';return;}
+      var data=await res.json();
+      var cardId=state.cardId;
+      closeSheet();
+      reset(true);
+      btnSend.textContent='✓ Send';
+      showToast('Thanks for your voice');
+      document.querySelectorAll('.voice-trigger[data-card="'+cardId+'"]').forEach(function(b){
+        var c=b.querySelector('.voice-count');
+        if(c){c.textContent=String(data.voice_count);}
+        else{var s=document.createElement('span');s.className='voice-count';s.textContent=String(data.voice_count);b.appendChild(s);}
+      });
+    }catch(err){
+      showToast('Network error, please retry');
+      btnSend.disabled=false;
+      btnSend.textContent='✓ Send';
+    }
+  });
 })();
 </script>
 </body>

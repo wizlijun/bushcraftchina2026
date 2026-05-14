@@ -17,13 +17,21 @@ const ICON_WECHAT = `<svg width="18" height="18" viewBox="0 0 24 24"><circle cx=
 
 const ICON_LOCATION = `<svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 7c-2.2 0-4 1.8-4 4 0 3 4 7 4 7s4-4 4-7c0-2.2-1.8-4-4-4z" fill="none" stroke="white" stroke-width="1.1"/><circle cx="12" cy="11" r="1.5" fill="none" stroke="white" stroke-width="1.1"/></svg>`;
 
-function renderProducts(products: string[]): string {
+const ICON_MIC = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0"/><path d="M12 17v4"/><path d="M9 21h6"/></svg>`;
+
+function renderVoiceButton(card: Card): string {
+  const count = card.voice_count ?? 0;
+  const badge = count > 0 ? `<span class="voice-count">${count}</span>` : "";
+  return `<button class="voice-trigger" type="button" data-card="${escapeHtml(card.id)}" aria-label="press and hold to leave a voice note">${ICON_MIC}${badge}</button>`;
+}
+
+function renderProducts(products: string[], brand: string): string {
   const items = products.slice(0, 3);
   if (!items.length) {
     return `<div class="back-empty">No works yet</div>`;
   }
   return items
-    .map((src) => `<img loading="lazy" src="${escapeHtml(src)}" alt="" class="back-img" onclick="openLightbox(this.src)" />`)
+    .map((src, i) => `<img loading="lazy" src="${escapeHtml(src)}" alt="${escapeHtml(brand)} works ${i + 1}" class="back-img" onclick="openLightbox(this.src)" />`)
     .join("");
 }
 
@@ -56,20 +64,28 @@ function renderBottomBar(card: Card): HtmlOut {
   return html`<div class="bottom-bar">${raw(items.join(""))}</div>`;
 }
 
-export function renderCard(card: Card): HtmlEscapedString | Promise<HtmlEscapedString> {
+export function renderCard(
+  card: Card,
+  opts: { asDetail?: boolean } = {}
+): HtmlEscapedString | Promise<HtmlEscapedString> {
   const flipLabel = `<button class="flip-trigger" onclick="this.closest('.card-flip').classList.toggle('flipped')">Works</button>`;
   const backFlipBtn = `<button class="flip-btn-back" onclick="this.closest('.card-flip').classList.toggle('flipped')">Crafter</button>`;
-  const backFace = `<div class="card-back"><div class="back-grid">${renderProducts(card.products)}</div>${backFlipBtn}</div>`;
+  const voiceBtn = renderVoiceButton(card);
+  const backFace = `<div class="card-back"><div class="back-grid">${renderProducts(card.products, card.brand)}</div>${backFlipBtn}${voiceBtn}</div>`;
+  const heading = opts.asDetail
+    ? html`<h1 class="brand serif">${card.brand}</h1>`
+    : html`<h2 class="brand serif">${card.brand}</h2>`;
+  const logoAlt = card.brand ? `${card.brand} logo` : "workshop logo";
 
   return html`<section class="card" data-id="${card.id}">
   <div class="card-flip">
     <div class="card-front" onclick="flipFront(event,this)">
       <header class="card-header">
-        <img class="site-logo" src="${card.logo || "/images/_default/logo.png"}" alt="${card.brand}" />
+        <img class="site-logo" src="${card.logo || "/images/_default/logo.png"}" alt="${logoAlt}" />
         ${raw(flipLabel)}
       </header>
       <div class="card-body">
-        <h2 class="brand serif">${card.brand}</h2>
+        ${heading}
         <div class="specialty">${card.specialty}</div>
         <hr class="sep" />
         ${card.owner ? html`<div class="owner">by the hand of · ${card.owner}</div>` : ""}
@@ -79,6 +95,7 @@ export function renderCard(card: Card): HtmlEscapedString | Promise<HtmlEscapedS
         ${renderBottomBar(card)}
         <div class="footer-text">Bushcraft China Community x Bushcraft Show 2026</div>
       </footer>
+      ${raw(voiceBtn)}
     </div>
     ${raw(backFace)}
   </div>
