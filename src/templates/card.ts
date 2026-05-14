@@ -73,7 +73,7 @@ export function renderCard(
   const flipLabel = `<button class="flip-trigger" onclick="this.closest('.card-flip').classList.toggle('flipped')">Works</button>`;
   const backFlipBtn = `<button class="flip-btn-back" onclick="this.closest('.card-flip').classList.toggle('flipped')">Crafter</button>`;
   const voiceBtn = renderVoiceButton(card);
-  const backFace = `<div class="card-back"><div class="back-grid">${renderProducts(card.products, card.brand)}</div>${backFlipBtn}${voiceBtn}</div>`;
+  const backFace = `<div class="card-back"><div class="back-grid">${renderProducts(card.products, card.brand)}</div>${backFlipBtn}</div>`;
   const heading = opts.asDetail
     ? html`<h1 class="brand serif">${card.brand}</h1>`
     : html`<h2 class="brand serif">${card.brand}</h2>`;
@@ -97,9 +97,9 @@ export function renderCard(
         ${renderBottomBar(card)}
         <div class="footer-text">Bushcraft China Community x Bushcraft Show 2026</div>
       </footer>
-      ${raw(voiceBtn)}
     </div>
     ${raw(backFace)}
+    ${raw(voiceBtn)}
   </div>
 </section>`;
 }

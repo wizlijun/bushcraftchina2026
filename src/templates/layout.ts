@@ -157,9 +157,6 @@ button, input, textarea, select {
   .card-front { cursor: default; }
   .flip-trigger,
   .flip-btn-back { display: none !important; }
-  .card-back .voice-trigger,
-  .card-back .voice-tooltip,
-  .card-back .voice-status { display: none !important; }
 }
 .card-header {
   padding: 28px 32px 8px;
