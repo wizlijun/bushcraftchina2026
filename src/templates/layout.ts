@@ -197,16 +197,14 @@ button, input, textarea, select {
   color: var(--muted);
   letter-spacing: 0.2px;
 }
-.card blockquote.desc,
 .card .desc {
-  font-family: "Playfair Display", "Georgia", "Songti SC", serif !important;
+  font-family: "Playfair Display", "Georgia", "Songti SC", serif;
   font-size: 17px;
   line-height: 1.7;
   color: var(--fg);
   white-space: pre-wrap;
   margin: auto 0 0;
   padding: 44px 4px 36px;
-  border: none;
   position: relative;
   quotes: "\u201C" "\u201D";
 }

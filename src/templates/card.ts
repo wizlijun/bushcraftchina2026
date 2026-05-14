@@ -91,7 +91,7 @@ export function renderCard(
         <div class="specialty">${card.specialty}</div>
         <hr class="sep" />
         ${card.owner ? html`<div class="owner">by the hand of · ${card.owner}</div>` : ""}
-        ${card.description ? html`<blockquote class="desc">${card.description}</blockquote>` : ""}
+        ${card.description ? html`<div class="desc">${card.description}</div>` : ""}
       </div>
       <footer class="card-footer">
         ${renderBottomBar(card)}
