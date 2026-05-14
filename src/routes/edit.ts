@@ -9,6 +9,7 @@ import {
 } from "../utils/cards";
 import { loadKeys, saveKeys, generateKey } from "../utils/keys";
 import { putImage, deleteObject } from "../utils/r2";
+import { loadVoiceIndex } from "../utils/voices";
 
 const ALLOWED_IMG_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_IMG_BYTES = 5 * 1024 * 1024;
@@ -56,7 +57,8 @@ export function mountEdit(app: Hono<AppEnv>): void {
     }
     const card = await getCard(c.env.BUCKET, auth.cardId!);
     if (!card) return c.text("we couldn’t find that maker", 404);
-    return c.html(layout({ title: `tending to · ${card.brand}`, noindex: true }, await renderEditForm(card, key, false)));
+    const { items: voices } = await loadVoiceIndex(c.env.BUCKET, card.id);
+    return c.html(layout({ title: `tending to · ${card.brand}`, noindex: true }, await renderEditForm(card, key, false, voices)));
   });
 
   app.get("/edit/:id", requireAuth, async (c) => {
@@ -66,8 +68,9 @@ export function mountEdit(app: Hono<AppEnv>): void {
     if (!canEditCard(auth, id)) return c.text("this door isn’t yours to open", 403);
     let card = await getCard(c.env.BUCKET, id);
     if (!card) card = emptyCard(id, "");
+    const { items: voices } = await loadVoiceIndex(c.env.BUCKET, id);
     return c.html(
-      layout({ title: `tending to · ${card.brand || id}`, noindex: true }, await renderEditForm(card, key, auth.role === "admin"))
+      layout({ title: `tending to · ${card.brand || id}`, noindex: true }, await renderEditForm(card, key, auth.role === "admin", voices))
     );
   });
 
