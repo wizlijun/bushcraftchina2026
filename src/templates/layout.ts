@@ -420,6 +420,7 @@ button, input, textarea, select {
   -webkit-backdrop-filter: blur(10px);
   border-top: 1px solid var(--line);
   padding: 22px 22px 28px;
+  padding-right: 60px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -467,17 +468,24 @@ button, input, textarea, select {
   cursor: not-allowed;
 }
 .voice-sheet-close {
-  align-self: center;
-  background: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
   border: none;
-  font-family: "Montserrat", sans-serif;
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
+  color: var(--fg);
   cursor: pointer;
-  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  padding: 0;
+  transition: background 150ms;
 }
+.voice-sheet-close:hover { background: rgba(0, 0, 0, 0.12); }
 .voice-toast {
   position: fixed;
   left: 50%;
@@ -767,13 +775,13 @@ ${body}
   <span class="swipe-hint-label">Scroll</span>
 </div>
 <div class="voice-sheet" id="voiceSheet" hidden>
+  <button type="button" class="voice-sheet-close" id="voiceCancel" aria-label="close">×</button>
   <div class="voice-sheet-header"><span id="voiceSheetTitle">Your voice note · 0:00</span></div>
   <audio id="voiceSheetAudio" controls preload="metadata"></audio>
   <div class="voice-sheet-actions">
     <button type="button" id="voiceRedo">↻ Re-record</button>
     <button type="button" class="primary" id="voiceSend">✓ Send</button>
   </div>
-  <button type="button" class="voice-sheet-close" id="voiceCancel">cancel</button>
 </div>
 <div class="voice-toast" id="voiceToast"></div>
 <script>
