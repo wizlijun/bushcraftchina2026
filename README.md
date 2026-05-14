@@ -246,6 +246,29 @@ POST https://bushcraftchina.com/api/cards?key=<ADMIN_KEY>
  https://bushcraftchina.com/edit/nepthday?key=<工匠 key>"
 ```
 
+## 运维脚本
+
+### 修改卡片 id（`scripts/rename-card.mjs`）
+
+把 R2 里某张卡片的 id 整体改名。会原子地（先复制后删除）搬迁：
+
+- `cards/<old>.json` → `cards/<new>.json`（同时改写其内部 `id` 字段及所有 `/images/<old>/...` 路径）
+- `cards/index.json` 中对应 entry 的 `id`
+- `keys.json` 中 `cards.<old>` → `cards.<new>`（**复用同一把工匠 key**，旧编辑链接里的 key 段仍可用，把 URL 里的 id 段替换即可）
+- `images/<old>/*` → `images/<new>/*`（只搬卡片 JSON 引用的图片，孤儿文件不动）
+- `voices/<old>/*` + `voices/<old>/index.json` → `voices/<new>/*`
+
+```bash
+# 先 dry-run，看清要改动哪些对象
+node scripts/rename-card.mjs <oldId> <newId> bushcraftchina2026 --dry-run
+
+# 确认无误后真正执行
+node scripts/rename-card.mjs <oldId> <newId> bushcraftchina2026
+```
+
+第三个参数是 bucket 名（省略时默认 `bushcraftchina2026`），改 dev 数据时传 `bushcraftchina2026-dev`。
+新 id 必须满足 `^[a-z0-9-]+$`，且 `cards/<newId>.json` 必须尚未占用，否则脚本会拒绝执行。
+
 ## 测试
 
 ```bash

@@ -634,7 +634,12 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
   background: var(--accent);
   color: #fff;
   border: none;
-  padding: 14px 28px;
+  box-sizing: border-box;
+  height: 46px;
+  padding: 0 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 8px;
   font-family: "Montserrat", sans-serif;
   font-size: 13px;
@@ -666,6 +671,20 @@ body:has(.edit-wrap) .swipe-hint { display: none; }
 .edit-wrap a.ghost:hover {
   background: #faf8f3;
   border-color: var(--muted);
+}
+.edit-wrap a.ghost-lg,
+.edit-wrap button.ghost-lg {
+  box-sizing: border-box;
+  height: 46px;
+  padding: 0 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 32px;
 }
 .edit-wrap .preview-img {
   width: 140px; height: 140px;

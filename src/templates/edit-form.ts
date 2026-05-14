@@ -124,7 +124,7 @@ export function renderEditForm(
 
     <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
       <button class="primary" type="submit" name="action" value="save">save（保存）</button>
-      <a class="ghost" href="/card/${encodeURIComponent(card.id)}" target="_blank">preview（预览）</a>
+      <a class="ghost ghost-lg" href="/card/${encodeURIComponent(card.id)}" target="_blank">their page（专属卡片）</a>
     </div>
   </form>
 
