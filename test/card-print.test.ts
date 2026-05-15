@@ -89,4 +89,10 @@ describe("renderCardPrint", () => {
     expect(out).toContain('name="robots"');
     expect(out).toContain("noindex");
   });
+
+  it("wraps content in .print-page so html2canvas can capture the background", async () => {
+    const out = (await renderCardPrint(sample, "https://example.com")).toString();
+    expect(out).toContain('class="print-page"');
+    expect(out).toContain('id="printPage"');
+  });
 });

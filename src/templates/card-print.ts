@@ -2,6 +2,12 @@ import { html, raw } from "hono/html";
 import type { HtmlEscapedString } from "hono/utils/html";
 import type { Card } from "../types";
 
+function safeJson(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/-->/g, "--\\u003e");
+}
+
 const FONT_FACES = `
 @font-face { font-family: 'Lora'; font-style: normal; font-weight: 400; font-display: block; src: url('/fonts/lora-400.woff2') format('woff2'); }
 @font-face { font-family: 'Lora'; font-style: normal; font-weight: 700; font-display: block; src: url('/fonts/lora-700.woff2') format('woff2'); }
@@ -32,11 +38,17 @@ html, body {
 }
 body {
   width: 1240px;
+  min-height: 1748px;
+  margin: 0;
+  background-color: var(--bg);
+}
+.print-page {
+  position: relative;
+  width: 1240px;
   height: 1748px;
   background-image: url('/b.png');
   background-repeat: repeat;
   background-size: 512px 512px;
-  position: relative;
   overflow: hidden;
 }
 .print-top {
@@ -159,7 +171,7 @@ export function renderCardPrint(
     if (!el || typeof QRCode === 'undefined') return;
     el.innerHTML = '';
     new QRCode(el, {
-      text: ${JSON.stringify(qrUrl)},
+      text: ${safeJson(qrUrl)},
       width: 192,
       height: 192,
       colorDark: '#2C2C2C',
@@ -179,7 +191,8 @@ export function renderCardPrint(
   }
   async function capture(){
     if (typeof html2canvas === 'undefined') return null;
-    var canvas = await html2canvas(document.body, {
+    var target = document.getElementById('printPage') || document.body;
+    var canvas = await html2canvas(target, {
       scale: 1,
       backgroundColor: null,
       useCORS: true,
@@ -198,7 +211,7 @@ export function renderCardPrint(
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
-      a.download = ${JSON.stringify(filename)};
+      a.download = ${safeJson(filename)};
       document.body.appendChild(a);
       a.click();
       setTimeout(function(){
@@ -237,14 +250,16 @@ export function renderCardPrint(
 <style>${raw(FONT_FACES)}${raw(PRINT_CSS)}</style>
 </head>
 <body>
-<div class="print-top">
-  <img class="print-logo" src="${logo}" alt="${card.brand} mark" crossorigin="anonymous" />
-  <div class="print-brand">${card.brand}</div>
-  ${card.specialty ? html`<div class="print-craft">${card.specialty}</div>` : ""}
+<div class="print-page" id="printPage">
+  <div class="print-top">
+    <img class="print-logo" src="${logo}" alt="${card.brand} mark" />
+    <div class="print-brand">${card.brand}</div>
+    ${card.specialty ? html`<div class="print-craft">${card.specialty}</div>` : ""}
+  </div>
+  ${card.owner ? html`<div class="print-owner">${card.owner}</div>` : ""}
+  <div class="print-qr" id="card-qr"></div>
+  <div class="print-foot">Bushcraft China Community</div>
 </div>
-${card.owner ? html`<div class="print-owner">${card.owner}</div>` : ""}
-<div class="print-qr" id="card-qr"></div>
-<div class="print-foot">Bushcraft China Community</div>
 <button id="downloadBtn" class="download-btn" type="button">Download PNG</button>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
