@@ -48,8 +48,24 @@ body {
   height: 1748px;
   background-image: url('/b.png');
   background-repeat: repeat;
-  background-size: 512px 512px;
+  background-size: 1024px 1024px;
   overflow: hidden;
+}
+.print-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: #ffffff;
+  z-index: 0;
+}
+.print-top,
+.print-owner,
+.print-qr,
+.print-foot {
+  z-index: 1;
 }
 .print-top {
   position: absolute;
@@ -91,7 +107,7 @@ body {
   bottom: 360px;
   right: 96px;
   font-family: var(--font-script);
-  font-size: 64px;
+  font-size: 128px;
   font-weight: 500;
   color: var(--muted);
   line-height: 1;
