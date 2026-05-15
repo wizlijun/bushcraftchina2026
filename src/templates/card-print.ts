@@ -79,10 +79,12 @@ body {
 }
 .print-logo-wrap {
   position: absolute;
-  top: 280px;
+  top: 920px;
+  height: 320px;
   left: 0;
   right: 0;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 .print-logo {
@@ -94,9 +96,9 @@ body {
 }
 .print-name-block {
   position: absolute;
-  bottom: 260px;
+  bottom: 200px;
   left: 96px;
-  right: 96px;
+  max-width: 780px;
 }
 .print-name-row {
   display: flex;
