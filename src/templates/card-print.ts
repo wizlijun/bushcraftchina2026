@@ -106,18 +106,19 @@ body {
 }
 .print-sub-block {
   position: absolute;
-  top: 1420px;
+  top: 1440px;
   left: 96px;
   max-width: 780px;
 }
 .print-craft {
   font-family: var(--font-sans);
-  font-size: 28px;
-  font-weight: 500;
+  font-size: 42px;
+  font-weight: 600;
   letter-spacing: 6px;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 22px;
+  color: #000000;
+  margin-top: 21px;
+  margin-bottom: 28px;
 }
 .print-owner {
   font-family: var(--font-script);
