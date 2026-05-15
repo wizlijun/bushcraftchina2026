@@ -51,13 +51,27 @@ function renderProducts(products: string[], brand: string): string {
     .join("");
 }
 
+function shortHost(value: string): string {
+  try {
+    const u = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
+    return u.hostname.replace(/^www\./, "");
+  } catch {
+    return value.replace(/^https?:\/\/(www\.)?/, "").replace(/\/.*$/, "");
+  }
+}
+
+function shortYoutube(value: string): string {
+  const match = value.match(/@[\w.-]+/);
+  return match ? match[0] : "";
+}
+
 function renderBottomBar(card: Card): HtmlOut {
   const items: string[] = [];
   if (card.contact.email) {
     items.push(`<a class="bar-item" href="mailto:${escapeHtml(card.contact.email)}">${ICON_EMAIL}<span>${escapeHtml(card.contact.email)}</span></a>`);
   }
   if (card.socials?.web) {
-    const display = card.socials.web.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+    const display = shortHost(card.socials.web);
     items.push(`<a class="bar-item" href="${escapeHtml(card.socials.web)}" target="_blank" rel="noopener">${ICON_WEB}<span>${escapeHtml(display)}</span></a>`);
   }
   if (card.contact.wechat) {
@@ -76,7 +90,7 @@ function renderBottomBar(card: Card): HtmlOut {
   if (card.socials?.youtube) {
     const yt = card.socials.youtube.trim();
     const url = /^https?:\/\//i.test(yt) ? yt : `https://youtube.com/${yt.startsWith("@") ? yt : `@${yt}`}`;
-    const display = url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+    const display = shortYoutube(yt) || shortHost(url);
     items.push(`<a class="bar-item" href="${escapeHtml(url)}" target="_blank" rel="noopener">${ICON_YOUTUBE}<span>${escapeHtml(display)}</span></a>`);
   }
   if (card.address) {
