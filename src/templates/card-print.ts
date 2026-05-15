@@ -57,7 +57,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 50%;
+  height: 480px;
   background: #ffffff;
   z-index: 0;
 }
