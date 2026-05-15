@@ -132,6 +132,7 @@ export function renderEditForm(
         <div class="card-share-label">scan or share（扫码或分享）</div>
         <a class="card-share-url" id="cardShareUrl" href="/card/${encodeURIComponent(card.id)}" target="_blank" rel="noopener">—</a>
         <button type="button" class="ghost" id="cardShareCopy">copy URL（复制链接）</button>
+        <button type="button" class="ghost" id="cardSharePrint">print card（打印卡片）</button>
       </div>
     </div>
   </form>
@@ -185,6 +186,12 @@ export function renderEditForm(
       } else {
         window.prompt('copy this URL（手动复制）', url);
       }
+    });
+  }
+  var printBtn = document.getElementById('cardSharePrint');
+  if(printBtn){
+    printBtn.addEventListener('click', function(){
+      window.open(url + '?print', '_blank', 'noopener');
     });
   }
 })();
