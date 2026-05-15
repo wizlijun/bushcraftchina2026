@@ -60,6 +60,17 @@ body {
   background-size: 1024px 1024px;
   z-index: 0;
 }
+.print-paper-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 350px;
+  background-image: url('/b.png');
+  background-repeat: repeat;
+  background-size: 1024px 1024px;
+  z-index: 0;
+}
 .print-logo-wrap,
 .print-name-block,
 .print-qr,
@@ -273,6 +284,7 @@ export function renderCardPrint(
 <body>
 <div class="print-page" id="printPage">
   <div class="print-paper-top" aria-hidden="true"></div>
+  <div class="print-paper-bottom" aria-hidden="true"></div>
   <div class="print-logo-wrap">
     <img class="print-logo" src="${logo}" alt="${card.brand} mark" />
   </div>
