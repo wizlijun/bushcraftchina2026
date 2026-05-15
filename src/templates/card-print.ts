@@ -71,41 +71,21 @@ body {
   background-size: 1024px 1024px;
   z-index: 0;
 }
-.print-logo-wrap,
-.print-name-block,
+.print-name-row,
+.print-sub-block,
 .print-qr,
 .print-foot {
   z-index: 1;
 }
-.print-logo-wrap {
-  position: absolute;
-  top: 920px;
-  height: 320px;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.print-logo {
-  max-width: 380px;
-  max-height: 320px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
-.print-name-block {
-  position: absolute;
-  bottom: 200px;
-  left: 96px;
-  max-width: 780px;
-}
 .print-name-row {
+  position: absolute;
+  bottom: 360px;
+  left: 96px;
+  right: 96px;
   display: flex;
-  align-items: baseline;
-  gap: 28px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
 }
 .print-brand {
   font-family: var(--font-serif-display);
@@ -116,12 +96,19 @@ body {
   color: var(--fg);
   word-wrap: break-word;
 }
-.print-owner {
-  font-family: var(--font-script);
-  font-size: 84px;
-  font-weight: 500;
-  color: var(--muted);
-  line-height: 1;
+.print-logo {
+  max-width: 380px;
+  max-height: 320px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.print-sub-block {
+  position: absolute;
+  top: 1420px;
+  left: 96px;
+  max-width: 780px;
 }
 .print-craft {
   font-family: var(--font-sans);
@@ -130,6 +117,14 @@ body {
   letter-spacing: 6px;
   text-transform: uppercase;
   color: var(--muted);
+  margin-bottom: 22px;
+}
+.print-owner {
+  font-family: var(--font-script);
+  font-size: 84px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1;
 }
 .print-qr {
   position: absolute;
@@ -287,15 +282,13 @@ export function renderCardPrint(
 <div class="print-page" id="printPage">
   <div class="print-paper-top" aria-hidden="true"></div>
   <div class="print-paper-bottom" aria-hidden="true"></div>
-  <div class="print-logo-wrap">
+  <div class="print-name-row">
+    <div class="print-brand">${card.brand}</div>
     <img class="print-logo" src="${logo}" alt="${card.brand} mark" />
   </div>
-  <div class="print-name-block">
-    <div class="print-name-row">
-      <div class="print-brand">${card.brand}</div>
-      ${card.owner ? html`<div class="print-owner">${card.owner}</div>` : ""}
-    </div>
+  <div class="print-sub-block">
     ${card.specialty ? html`<div class="print-craft">${card.specialty}</div>` : ""}
+    ${card.owner ? html`<div class="print-owner">${card.owner}</div>` : ""}
   </div>
   <div class="print-qr" id="card-qr"></div>
   <div class="print-foot">Bushcraft China Community</div>
