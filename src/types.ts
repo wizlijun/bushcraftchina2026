@@ -14,6 +14,7 @@ export interface Card {
     web?: string;
     instagram?: string;
     xiaohongshu?: string;
+    youtube?: string;
   };
   products: string[];
   links: Array<{ label: string; url: string }>;

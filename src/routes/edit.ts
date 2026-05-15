@@ -160,6 +160,7 @@ export function mountEdit(app: Hono<AppEnv>): void {
       web: String(fd.get("social_web") ?? "").trim() || undefined,
       instagram: String(fd.get("social_instagram") ?? "").trim() || undefined,
       xiaohongshu: String(fd.get("social_xiaohongshu") ?? "").trim() || undefined,
+      youtube: String(fd.get("social_youtube") ?? "").trim() || undefined,
     };
 
     card.address = String(fd.get("address") ?? "").trim() || undefined;

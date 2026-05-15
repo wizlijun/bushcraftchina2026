@@ -116,6 +116,9 @@ export function renderEditForm(
     <div class="row">
       <input type="text" name="social_xiaohongshu" placeholder="@xiaohongshu（小红书）" value="${card.socials?.xiaohongshu ?? ""}" />
     </div>
+    <div class="row">
+      <input type="url" name="social_youtube" placeholder="https://youtube.com/@channel（YouTube 频道）" value="${card.socials?.youtube ?? ""}" />
+    </div>
 
     <label>where to find them（所在地）</label>
     <div class="row">
