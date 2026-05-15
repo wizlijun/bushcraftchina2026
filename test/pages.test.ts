@@ -65,4 +65,50 @@ describe("pages routes", () => {
     const res = await buildApp().request("/images/x/none.png", {}, env);
     expect(res.status).toBe(404);
   });
+
+  it("GET /card/:id?print renders the print template", async () => {
+    await putCard(env.BUCKET, {
+      id: "shangwu", brand: "晌午", owner: "Jerry", logo: "", specialty: "刀匠",
+      description: "", contact: {}, socials: {}, products: [], links: [],
+    });
+    await upsertIndexEntry(env.BUCKET, { id: "shangwu", brand: "晌午", order: 1 });
+    const res = await buildApp().request("/card/shangwu?print", {}, env);
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toContain("晌午");
+    expect(body).toContain("Jerry");
+    expect(body).toContain("Bushcraft China Community");
+    expect(body).toContain("html2canvas");
+    expect(body).not.toContain("voice-sheet");
+    expect(body).not.toContain("swipe-hint");
+  });
+
+  it("GET /card/:id?print returns 404 for unknown", async () => {
+    const res = await buildApp().request("/card/none?print", {}, env);
+    expect(res.status).toBe(404);
+  });
+
+  it("GET /logo?print rewrites card links with ?print", async () => {
+    await putCard(env.BUCKET, {
+      id: "shangwu", brand: "晌午", owner: "", logo: "/images/shangwu/logo.png", specialty: "刀匠",
+      description: "", contact: {}, socials: {}, products: [], links: [],
+    });
+    await upsertIndexEntry(env.BUCKET, { id: "shangwu", brand: "晌午", order: 1 });
+    const res = await buildApp().request("/logo?print", {}, env);
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toContain('href="/card/shangwu?print"');
+  });
+
+  it("GET /logo without ?print keeps plain card links", async () => {
+    await putCard(env.BUCKET, {
+      id: "shangwu", brand: "晌午", owner: "", logo: "/images/shangwu/logo.png", specialty: "刀匠",
+      description: "", contact: {}, socials: {}, products: [], links: [],
+    });
+    await upsertIndexEntry(env.BUCKET, { id: "shangwu", brand: "晌午", order: 1 });
+    const res = await buildApp().request("/logo", {}, env);
+    const body = await res.text();
+    expect(body).toContain('href="/card/shangwu"');
+    expect(body).not.toContain('href="/card/shangwu?print"');
+  });
 });

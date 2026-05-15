@@ -3,6 +3,7 @@ import { html, raw } from "hono/html";
 import type { AppEnv, Card } from "../types";
 import { layout } from "../templates/layout";
 import { renderCard } from "../templates/card";
+import { renderCardPrint } from "../templates/card-print";
 import { renderLogoWall } from "../templates/logo-wall";
 import { getCard, loadAllCards } from "../utils/cards";
 import { getImage } from "../utils/r2";
@@ -48,14 +49,16 @@ export function mountPages(app: Hono<AppEnv>): void {
   app.get("/logo", async (c) => {
     const o = origin(c.req.url);
     const cards: Card[] = await loadAllCards(c.env.BUCKET);
+    const print = c.req.query("print") !== undefined;
     const meta = {
       title: "Crafters · Bushcraft China Community",
       description: "Marks of every workshop gathered at Bushcraft China 2026.",
       canonical: `${o}/logo`,
       image: `${o}/b.png`,
       type: "website" as const,
+      noindex: print,
     };
-    const body = await renderLogoWall(cards);
+    const body = await renderLogoWall(cards, { print });
     return c.html(layout(meta, body), 200, { "cache-control": "no-store" });
   });
 
@@ -63,6 +66,13 @@ export function mountPages(app: Hono<AppEnv>): void {
     const card = await getCard(c.env.BUCKET, c.req.param("id"));
     if (!card) return c.text("we couldn’t find that maker", 404);
     const o = origin(c.req.url);
+    if (c.req.query("print") !== undefined) {
+      const page = await renderCardPrint(card, o);
+      return c.html(page, 200, {
+        "cache-control": "no-store",
+        "x-robots-tag": "noindex, nofollow",
+      });
+    }
     const published = isPublished(card);
     const meta = cardMeta(card, o, { published });
     const cardHtml = await renderCard(card, { asDetail: true });
