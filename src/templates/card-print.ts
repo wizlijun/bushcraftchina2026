@@ -46,25 +46,40 @@ body {
   position: relative;
   width: 1240px;
   height: 1748px;
+  background: #ffffff;
+  overflow: hidden;
+}
+.print-tear {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 380px;
+  height: 300px;
   background-image: url('/b.png');
   background-repeat: repeat;
   background-size: 1024px 1024px;
-  overflow: hidden;
-}
-.print-page::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 480px;
-  background: #ffffff;
+  background-position: bottom left;
   z-index: 0;
+  clip-path: polygon(
+    0% 100%,
+    100% 100%,
+    93% 90%, 96% 80%, 86% 74%, 90% 62%, 78% 58%,
+    82% 46%, 68% 42%, 72% 31%, 58% 26%, 53% 18%,
+    42% 13%, 28% 9%, 16% 5%, 7% 2%, 0% 0%
+  );
+  -webkit-clip-path: polygon(
+    0% 100%,
+    100% 100%,
+    93% 90%, 96% 80%, 86% 74%, 90% 62%, 78% 58%,
+    82% 46%, 68% 42%, 72% 31%, 58% 26%, 53% 18%,
+    42% 13%, 28% 9%, 16% 5%, 7% 2%, 0% 0%
+  );
 }
 .print-top,
 .print-owner,
 .print-qr,
 .print-foot {
+  position: absolute;
   z-index: 1;
 }
 .print-top {
@@ -96,7 +111,7 @@ body {
 }
 .print-craft {
   font-family: var(--font-sans);
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 500;
   letter-spacing: 6px;
   text-transform: uppercase;
@@ -107,7 +122,7 @@ body {
   bottom: 360px;
   right: 96px;
   font-family: var(--font-script);
-  font-size: 128px;
+  font-size: 96px;
   font-weight: 500;
   color: var(--muted);
   line-height: 1;
@@ -267,6 +282,7 @@ export function renderCardPrint(
 </head>
 <body>
 <div class="print-page" id="printPage">
+  <div class="print-tear" aria-hidden="true"></div>
   <div class="print-top">
     <img class="print-logo" src="${logo}" alt="${card.brand} mark" />
     <div class="print-brand">${card.brand}</div>
