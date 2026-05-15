@@ -110,7 +110,7 @@ export function renderCard(
       </div>
       <footer class="card-footer">
         ${renderBottomBar(card)}
-        <div class="footer-text">Bushcraft China Community x Bushcraft Show 2026</div>
+        <a class="footer-text" href="/logo">Bushcraft China Community x Bushcraft Show 2026</a>
       </footer>
     </div>
     ${raw(backFace)}

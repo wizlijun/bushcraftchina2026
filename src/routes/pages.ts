@@ -3,6 +3,7 @@ import { html, raw } from "hono/html";
 import type { AppEnv, Card } from "../types";
 import { layout } from "../templates/layout";
 import { renderCard } from "../templates/card";
+import { renderLogoWall } from "../templates/logo-wall";
 import { getCard, loadAllCards } from "../utils/cards";
 import { getImage } from "../utils/r2";
 import {
@@ -42,6 +43,20 @@ export function mountPages(app: Hono<AppEnv>): void {
     const body = html`<main class="feed">${raw(rendered.join(""))}</main>`;
     const headers = { "cache-control": "no-store" };
     return c.html(layout(meta, await body), 200, headers);
+  });
+
+  app.get("/logo", async (c) => {
+    const o = origin(c.req.url);
+    const cards: Card[] = await loadAllCards(c.env.BUCKET);
+    const meta = {
+      title: "Crafters · Bushcraft China Community",
+      description: "Marks of every workshop gathered at Bushcraft China 2026.",
+      canonical: `${o}/logo`,
+      image: `${o}/b.png`,
+      type: "website" as const,
+    };
+    const body = await renderLogoWall(cards);
+    return c.html(layout(meta, body), 200, { "cache-control": "no-store" });
   });
 
   app.get("/card/:id", async (c) => {
